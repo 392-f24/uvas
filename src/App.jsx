@@ -6,6 +6,7 @@ import NavigationBar from "./components/NavigationBar";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Timeline from "./pages/Timeline";
+import { Box } from "@mui/material";
 
 const theme = createTheme({
   palette: {
@@ -32,12 +33,22 @@ function App() {
     <>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
-          <NavigationBar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/profile/:profileId" element={<Profile />} />
-            <Route path="/timeline" element={<Timeline />} />
-          </Routes>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            <Box maxWidth="md" width="100%">
+              <NavigationBar />
+              <Box sx={{ marginTop: "20px" }}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/profile/:profileId" element={<Profile />} />
+                  <Route path="/timeline" element={<Timeline />} />
+                </Routes>
+              </Box>
+            </Box>
+          </Box>
         </BrowserRouter>
       </ThemeProvider>
     </>

@@ -63,6 +63,7 @@ function ResponsiveAppBar() {
             variant="h3"
             noWrap
             component="a"
+            onClick={() => navigate("/")}
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -116,6 +117,7 @@ function ResponsiveAppBar() {
             variant="h5"
             noWrap
             component="a"
+            onClick={() => navigate("/")}
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
