@@ -14,24 +14,89 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 
 const pages = ["Home", "Timeline"];
 
+const Logo = ({ small, onClick }) => (
+  <Box
+    component="a"
+    onClick={onClick}
+    sx={{
+      display: { xs: small ? "flex" : "none", md: small ? "none" : "flex" },
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: "50%",
+      textDecoration: "none",
+      cursor: "pointer",
+    }}
+  >
+    <Typography
+      component="p"
+      sx={{
+        fontSize: "20px",
+        fontWeight: 700,
+        letterSpacing: "0.3rem",
+        textAlign: "center",
+        lineHeight: "1",
+      }}
+    >
+      🍇uvas
+    </Typography>
+  </Box>
+);
+
+const NavigationMenu = ({ anchorEl, handleCloseMenu, handleNavigate }) => (
+  <Menu
+    id="menu-appbar"
+    anchorEl={anchorEl}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "left",
+    }}
+    keepMounted
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "left",
+    }}
+    open={Boolean(anchorEl)}
+    onClose={handleCloseMenu}
+    sx={{ display: { xs: "block", md: "none" } }}
+  >
+    {pages.map((page) => (
+      <MenuItem key={page} onClick={() => handleNavigate(page)}>
+        <Typography textAlign="center" color="primary">
+          {page}
+        </Typography>
+      </MenuItem>
+    ))}
+  </Menu>
+);
+
 function ResponsiveAppBar() {
+  const theme = useTheme();
+  const navigate = useNavigate();
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = (e) => {
-    const page = e.target.textContent;
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const handleNavigate = (page) => {
     switch (page) {
       case "Home":
         navigate("/");
@@ -39,12 +104,10 @@ function ResponsiveAppBar() {
       case "Timeline":
         navigate("/timeline");
         break;
+      default:
+        break;
     }
     setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
   };
 
   const handleLogout = () => {
@@ -55,32 +118,24 @@ function ResponsiveAppBar() {
   return (
     <AppBar
       position="static"
-      sx={{ background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" }}
+      sx={{ background: theme.palette.primary.dark, borderRadius: "6px" }}
     >
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Typography
-            variant="h3"
-            noWrap
-            component="a"
-            onClick={() => navigate("/")}
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            🍇 UVAS
-          </Typography>
+      <Container>
+        <Toolbar
+          disableGutters
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+            padding: "8px 0px",
+          }}
+        >
+          <Logo small={false} onClick={() => navigate("/")} />
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -88,64 +143,31 @@ function ResponsiveAppBar() {
             >
               <MenuIcon />
             </IconButton>
-            <Menu
-              id="menu-appbar"
+            <NavigationMenu
               anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: "block", md: "none" } }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center" color="primary">
-                    {page}
-                  </Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+              handleCloseMenu={handleCloseNavMenu}
+              handleNavigate={handleNavigate}
+            />
           </Box>
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            onClick={() => navigate("/")}
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            🍇 UVAS
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+
+          <Logo small={true} onClick={() => navigate("/")} />
+
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => handleNavigate(page)}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 {page}
               </Button>
             ))}
           </Box>
+
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -176,4 +198,5 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
+
 export default ResponsiveAppBar;

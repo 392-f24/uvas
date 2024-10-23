@@ -1,7 +1,14 @@
-const Timeline = () => {
-  return (
-    <div>Timeline</div>
-  )
-}
+import { useTheme } from "@mui/material/styles";
+import { Typography } from "@mui/material";
 
-export default Timeline
+const Timeline = () => {
+  const theme = useTheme();
+
+  return (
+    <Typography component="p" color={theme.palette.secondary.dark}>
+      Timeline
+    </Typography>
+  );
+};
+
+export default Timeline;

@@ -11,18 +11,20 @@ import { Box } from "@mui/material";
 const theme = createTheme({
   palette: {
     primary: {
-      light: purple[100],
-      main: purple[300],
-      dark: purple[500],
+      light: "#D45F95",
+      main: "#B2356F",
+      dark: "#5A1535",
     },
     secondary: {
+      light: grey[300],
       main: grey[500],
+      dark: grey[800],
     },
   },
   typography: {
-    fontFamily: ["helvetica", "Arial", "sans-serif"].join(","),
+    fontFamily: ["Montserrat", "helvetica", "Arial", "sans-serif"].join(","),
     h3: {
-      fontSize: "2.5rem",
+      fontSize: "1rem",
       fontWeight: "bold",
     },
   },
@@ -37,6 +39,7 @@ function App() {
             display="flex"
             flexDirection="column"
             alignItems="center"
+            color={theme.m}
           >
             <Box maxWidth="md" width="100%">
               <NavigationBar />
