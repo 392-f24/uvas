@@ -6,16 +6,19 @@ import {
   Button,
   Switch,
   FormControlLabel,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
+  Box,
+  Chip,
 } from "@mui/material";
 
 const validateForm = (key, val) => {
   switch (key) {
     case "firstName":
       return val.length < 1 ? "Name must be at least 1 character" : "";
+    case "relationshipTags":
+      return val.length === 0
+        ? "Please select at least one relationship tag"
+        : "";
+    default:
       return "";
   }
 };
@@ -33,7 +36,7 @@ const AddPersonForm = ({ user }) => {
         email: "",
         others: {},
       },
-      relationshipTag: [],
+      relationshipTags: [],
       birthday: {
         date: "",
         remind: true,
@@ -66,7 +69,21 @@ const AddPersonForm = ({ user }) => {
     );
   };
 
+  // TODO: fetch tags from database
   const tags = ["Friend", "Family", "Coworker", "Acquaintance", "Other"];
+
+  const toggleTag = (tag) => {
+    const newTags = state.values.relationshipTags.includes(tag)
+      ? state.values.relationshipTags.filter((t) => t !== tag)
+      : [...state.values.relationshipTags, tag];
+
+    change({
+      target: {
+        id: "relationshipTags",
+        value: newTags,
+      },
+    });
+  };
 
   return (
     <form
@@ -119,11 +136,31 @@ const AddPersonForm = ({ user }) => {
         + add custom
       </Typography>
 
-      <SectionLabel label="Relationship Tag" />
-      {/* TODO: add relationship tags input */}
-      <Typography component="p" color={theme.palette.secondary.dark}>
-        tbd
-      </Typography>
+      <SectionLabel label="Relationship Tags" />
+
+      <Box display="flex" flexWrap="wrap" gap={1}>
+        {tags.map((tag) => (
+          <Chip
+            key={tag}
+            label={tag}
+            onClick={() => toggleTag(tag)}
+            style={{
+              backgroundColor: state.values.relationshipTags.includes(tag)
+                ? theme.palette.primary.main
+                : theme.palette.secondary.light,
+              color: state.values.relationshipTags.includes(tag)
+                ? theme.palette.primary.contrastText
+                : theme.palette.text.primary,
+            }}
+          />
+        ))}
+      </Box>
+
+      {state.errors?.relationshipTags && (
+        <Typography color="error" fontSize="0.75rem">
+          {state.errors.relationshipTags}
+        </Typography>
+      )}
 
       <SectionLabel label="Important Dates Info" />
 
