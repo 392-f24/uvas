@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useFormData } from "../utilities/useFormData";
 import {
@@ -8,6 +9,10 @@ import {
   FormControlLabel,
   Box,
   Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 const validateForm = (key, val) => {
@@ -70,7 +75,14 @@ const AddPersonForm = ({ user }) => {
   };
 
   // TODO: fetch tags from database
-  const tags = ["Friend", "Family", "Coworker", "Acquaintance", "Other"];
+  const [tags, setTags] = useState([
+    "Friend",
+    "Family",
+    "Coworker",
+    "Acquaintance",
+  ]);
+  const [newTag, setNewTag] = useState("");
+  const [displayCustomTagForm, setDisplayCustomTagForm] = useState(false);
 
   const toggleTag = (tag) => {
     const newTags = state.values.relationshipTags.includes(tag)
@@ -83,6 +95,16 @@ const AddPersonForm = ({ user }) => {
         value: newTags,
       },
     });
+  };
+
+  const handleAddCustomTag = () => {
+    if (newTag.trim() !== "" && !tags.includes(newTag)) {
+      setTags([...tags, newTag]);
+      toggleTag(newTag);
+    }
+
+    setNewTag("");
+    setDisplayCustomTagForm(false);
   };
 
   return (
@@ -155,6 +177,39 @@ const AddPersonForm = ({ user }) => {
           />
         ))}
       </Box>
+
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={() => setDisplayCustomTagForm(true)}
+      >
+        Add Custom Tag
+      </Button>
+
+      <Dialog
+        open={displayCustomTagForm}
+        onClose={() => setDisplayCustomTagForm(false)}
+      >
+        <DialogTitle>Add Custom Tag</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="New Tag"
+            value={newTag}
+            onChange={(e) => setNewTag(e.target.value)}
+            // fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleAddCustomTag}
+            variant="contained"
+            color="primary"
+          >
+            Add
+          </Button>
+          <Button onClick={() => setDisplayCustomTagForm(false)}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
 
       {state.errors?.relationshipTags && (
         <Typography color="error" fontSize="0.75rem">

@@ -23,7 +23,6 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: ["Montserrat", "helvetica", "Arial", "sans-serif"].join(","),
-    // fontSize: 16,
   },
 });
 
