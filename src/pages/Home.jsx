@@ -1,6 +1,7 @@
 import { useTheme } from "@mui/material/styles";
 import { Typography, Box } from "@mui/material";
 import ProfileCard from "../components/ProfileCard";
+import ReminderCard from "../components/ReminderCard";
 
 const people = [
   {
@@ -22,8 +23,18 @@ const people = [
     name: "Darlene Robertson",
     occupation: "Software Engineer at Figma",
     tags: ["Coworker"],
-  },
+  }
+]
 
+const reminders = [
+  {
+    title: "Cameron's 23rd Birthday",
+    date: "Today",
+  },
+  {
+    title: "Kathryn's 25th Birthday",
+    date: "Yesterday",
+  }
 ]
 
 const Home = () => {
@@ -40,6 +51,21 @@ const Home = () => {
       <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
         Reminders
       </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >
+        {reminders.map((reminder, index) => (
+          <ReminderCard
+            key={index} // CHANGE THIS TO UID WHEN DB IS READY
+            title={reminder.title}
+            date={reminder.date}>
+          </ReminderCard>
+        ))}
+      </Box>
       <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
         People
       </Typography>

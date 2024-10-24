@@ -7,17 +7,15 @@ import {
     Typography,
     Chip,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 
 function ProfileCard({ name, occupation, tags }) {
     return (
         <Card sx={{
-            paddingX: 2,
-            paddingY: 2,
+            px: 2,
+            py: 2,
             borderRadius: 2,
-            // margin: 2,
             backgroundColor: "#EAEAEA",
             boxShadow: "none"
         }}>
@@ -37,7 +35,7 @@ function ProfileCard({ name, occupation, tags }) {
                                 {occupation}
                             </Typography>
                         </Grid2>
-                        <Grid2 item sx={{ mt: 2 }}>
+                        <Grid2 item sx={{ mt: 1 }}>
                             <Grid2 container direction="row" spacing={1}>
                                 {tags.map((tag, index) => (
                                     <Chip key={index} label={tag} color="primary" />
