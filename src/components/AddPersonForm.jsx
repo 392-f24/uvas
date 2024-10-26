@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Input,
 } from "@mui/material";
 
 const validateForm = (key, val) => {
@@ -34,6 +35,7 @@ const AddPersonForm = ({ user }) => {
   const [state, change] = useFormData(
     validateForm,
     user || {
+      avatar: "",
       firstName: "",
       lastName: "",
       contactInfo: {
@@ -83,6 +85,7 @@ const AddPersonForm = ({ user }) => {
   ]);
   const [newTag, setNewTag] = useState("");
   const [displayCustomTagForm, setDisplayCustomTagForm] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState(null);
 
   const toggleTag = (tag) => {
     const newTags = state.values.relationshipTags.includes(tag)
@@ -105,6 +108,19 @@ const AddPersonForm = ({ user }) => {
 
     setNewTag("");
     setDisplayCustomTagForm(false);
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      change({
+        target: {
+          id: "avatar",
+          value: file,
+        },
+      });
+      setAvatarPreview(URL.createObjectURL(file));
+    }
   };
 
   return (
@@ -133,6 +149,27 @@ const AddPersonForm = ({ user }) => {
         name="lastName"
         value={state.values.lastName}
         onChange={change}
+      />
+
+      <SectionLabel label="Person Photo" />
+      {avatarPreview && (
+        <Box mt={2}>
+          <img
+            src={avatarPreview}
+            alt="Person photo preview"
+            style={{
+              width: "100px",
+              height: "100px",
+              objectFit: "cover",
+              borderRadius: "50%",
+            }}
+          />
+        </Box>
+      )}
+      <Input
+        type="file"
+        inputProps={{ accept: "image/*" }}
+        onChange={handleAvatarChange}
       />
 
       <SectionLabel label="Contact Info" />
