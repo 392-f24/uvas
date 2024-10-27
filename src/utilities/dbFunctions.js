@@ -12,7 +12,7 @@ export async function addNewUser(userId, userData) {
     try {
       const userRef = getUserDoc(userId);
   
-      // Initial structure based on  data model
+      // Initial structure based on data model
       const initialData = {
         Relationships: [],
         Tags: ["Friend", "Family", "Coworker"],
