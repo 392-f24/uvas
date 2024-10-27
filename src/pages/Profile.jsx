@@ -108,6 +108,7 @@ const Profile = () => {
   const [openAdditional, setOpenAdditional] = useState(false);
 
   // State for managing custom contact fields
+  //TODO: maybe just use person.contactInfo.others
   const [customContacts, setCustomContacts] = useState(
     Object.entries(person.contactInfo?.others || {}).map(([key, value]) => ({
       platform: key,
@@ -167,6 +168,17 @@ const Profile = () => {
     </Box>
   );
 
+  // Helper function to update Firestore
+  const updateProfile = async (newData) => {
+    try {
+      // TODO: Firebase update function here
+      // await updateProfileData(profileId, newData);
+      setPerson((prev) => ({ ...prev, ...newData }));
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
+
   const BasicInfoEdit = () => (
     <Dialog
       open={openBasicInfo}
@@ -202,6 +214,115 @@ const Profile = () => {
           onClick={() => {
             // TODO: Handle save
             setOpenBasicInfo(false);
+          }}
+        >
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+
+  // Contact Information Edit Form
+  const ContactEdit = () => (
+    <Dialog
+      open={openContact}
+      onClose={() => setOpenContact(false)}
+      maxWidth="sm"
+      fullWidth
+    >
+      <DialogTitle>Edit Contact Information</DialogTitle>
+      <DialogContent>
+        <Stack spacing={2} sx={{ mt: 2 }}>
+          <TextField
+            label="Email"
+            defaultValue={person.contactInfo?.email}
+            fullWidth
+            type="email"
+          />
+          <TextField
+            label="Phone Number"
+            defaultValue={person.contactInfo?.phoneNumber}
+            fullWidth
+          />
+          <TextField
+            label="Address"
+            defaultValue={person.address}
+            fullWidth
+            multiline
+            rows={2}
+          />
+
+          {/* Dynamic social media/contact fields */}
+          {customContacts.map((contact, index) => (
+            <Box key={index} sx={{ display: "flex", gap: 1 }}>
+              <TextField
+                label="Platform"
+                value={contact.platform}
+                onChange={(e) => {
+                  const newContacts = [...customContacts];
+                  newContacts[index].platform = e.target.value;
+                  setCustomContacts(newContacts);
+                }}
+                sx={{ flex: 1 }}
+              />
+              <TextField
+                label="Value"
+                value={contact.value}
+                onChange={(e) => {
+                  const newContacts = [...customContacts];
+                  newContacts[index].value = e.target.value;
+                  setCustomContacts(newContacts);
+                }}
+                sx={{ flex: 2 }}
+              />
+              <IconButton
+                color="error"
+                onClick={() => {
+                  const newContacts = customContacts.filter(
+                    (_, i) => i !== index
+                  );
+                  setCustomContacts(newContacts);
+                }}
+              >
+                <Delete />
+              </IconButton>
+            </Box>
+          ))}
+
+          <Button
+            startIcon={<Add />}
+            onClick={() => {
+              setCustomContacts([
+                ...customContacts,
+                { platform: "", value: "" },
+              ]);
+            }}
+          >
+            Add Contact Method
+          </Button>
+        </Stack>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpenContact(false)}>Cancel</Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            // Handle save
+            const others = {};
+            customContacts.forEach((contact) => {
+              if (contact.platform && contact.value) {
+                others[contact.platform] = contact.value;
+              }
+            });
+
+            const newContactInfo = {
+              ...person.contactInfo,
+              others,
+            };
+
+            // TODO: might just use utility functions
+            updateProfile({ contactInfo: newContactInfo });
+            setOpenContact(false);
           }}
         >
           Save
@@ -288,7 +409,7 @@ const Profile = () => {
             >
               Important Dates
             </Typography>
-            {/* <EditButton onClick={() => setOpenDates(true)} /> */}
+            {/*TODO:uncomment and add edit modal: <EditButton onClick={() => setOpenDates(true)} /> */}
           </Box>
           <List dense disablePadding>
             <ListItem disablePadding sx={{ mb: 1 }}>
@@ -301,6 +422,7 @@ const Profile = () => {
                   secondary={
                     <>
                       {new Date(person.birthday.date).toLocaleDateString()}
+                      {/* TODO: replace Reminder label to reminded? */}
                       {person.birthday.remind && (
                         <Chip
                           size="small"
@@ -346,14 +468,22 @@ const Profile = () => {
           <Divider sx={{ my: 2 }} />
 
           {/* Contact Info */}
-          <Typography
-            variant="subtitle1"
-            fontWeight="bold"
-            gutterBottom
-            color="primary"
+          <Box
+            sx={{
+              display: "flex",
+              alignItem: "center",
+            }}
           >
-            Contact Information
-          </Typography>
+            <Typography
+              variant="subtitle1"
+              fontWeight="bold"
+              gutterBottom
+              color="primary"
+            >
+              Contact Information
+            </Typography>
+            <EditButton onClick={() => setOpenContact(true)} />
+          </Box>
           <List dense disablePadding>
             <ListItem disablePadding sx={{ mb: 1 }}>
               <ListItemIcon sx={{ minWidth: 40 }}>
@@ -524,6 +654,7 @@ const Profile = () => {
       </Card>
       {/* Edit Modals */}
       <BasicInfoEdit />
+      <ContactEdit />
     </Box>
   );
 };
