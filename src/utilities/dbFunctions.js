@@ -72,7 +72,6 @@ export const fetchPeople = async (userId) => {
 
         const relationships = userSnap.data().Relationships;
         
-        // Transform relationships data to fit frontend expectations
         const people = relationships.map(personObj => {
             const personId = Object.keys(personObj)[0];
             const personData = personObj[personId];
@@ -81,7 +80,7 @@ export const fetchPeople = async (userId) => {
                 name: `${personData.firstName} ${personData.lastName}`,
                 occupation: personData.occupation,
                 tags: personData.relationshipTag,
-                avatar: personData.avatar || null, // Optional: add avatar if needed
+                avatar: personData.avatar || null, // Optional: add avatar
             };
         });
 
@@ -93,7 +92,20 @@ export const fetchPeople = async (userId) => {
     }
 };
 
+// Function to fetch a user's tags
+export async function fetchTags(userId) {
+    try {
+        const userSnap = await getDoc(getUserDoc(userId));
 
+        const tags = userSnap.data().Tags || [];
+        
+        console.log("Tags fetched successfully:", tags);
+        return tags;
+    } catch (error) {
+        console.error("Error fetching tags:", error);
+        return [];
+    }
+}
 // Function to fetch a specific person's profile
 export const fetchPersonProfile = async (userId, personId) => {
     try {
@@ -138,7 +150,6 @@ export const fetchEvents = async (userId) => {
 export const filterPeopleByTag = async (userId, tag) => {
     const people = await fetchPeople(userId);
     return people.filter(person => {
-        const key = Object.keys(person)[0];
-        return person[key].relationshipTag.includes(tag);
+        return person.tags.includes(tag);
     });
 };
