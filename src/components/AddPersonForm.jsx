@@ -60,7 +60,23 @@ const AddPersonForm = ({ user }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(state);
+
+    const filteredOthers = Object.fromEntries(
+      Object.entries(state.values.contactInfo.others).filter(
+        ([key, value]) => value.trim() !== ""
+      )
+    );
+
+    const filteredState = {
+      ...state.values,
+      contactInfo: {
+        ...state.values.contactInfo,
+        others: filteredOthers,
+      },
+    };
+
+    console.log(state.values);
+    console.log(filteredState);
   };
 
   const SectionLabel = ({ label }) => {
@@ -150,6 +166,23 @@ const AddPersonForm = ({ user }) => {
     }
   };
 
+  const handleCustomContactChange = (label, newValue) => {
+    const updatedOthers = {
+      ...state.values.contactInfo.others,
+      [label]: newValue,
+    };
+
+    change({
+      target: {
+        id: `contactInfo`,
+        value: {
+          ...state.values.contactInfo,
+          others: updatedOthers,
+        },
+      },
+    });
+  };
+
   return (
     <form
       onSubmit={onSubmit}
@@ -217,10 +250,14 @@ const AddPersonForm = ({ user }) => {
         onChange={change}
       />
 
-      {/* TODO: add space for social media fields */}
       {Object.entries(state.values.contactInfo.others).map(
         ([label, value], i) => (
-          <TextField key={i} label={label} value={value} disabled />
+          <TextField
+            key={i}
+            label={label}
+            value={value}
+            onChange={(e) => handleCustomContactChange(label, e.target.value)}
+          />
         )
       )}
 
@@ -264,10 +301,6 @@ const AddPersonForm = ({ user }) => {
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Typography component="p" color={theme.palette.secondary.dark}>
-        + add custom
-      </Typography>
 
       <SectionLabel label="Relationship Tags" />
 
