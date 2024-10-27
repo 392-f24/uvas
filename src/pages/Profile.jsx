@@ -2,8 +2,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Card, CardContent, Divider, Typography } from "@mui/material";
-// import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-// import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
 // components
 import BasicInfoHeaderEdit from "../components/Profile/BasicInfoHeaderEdit";
@@ -14,12 +12,13 @@ import ImportantDates from "../components/Profile/ImportantDates";
 import ContactInfo from "../components/Profile/ContactInfo";
 import AdditionalInfo from "../components/Profile/AdditionalInfo";
 import EventsCard from "../components/Profile/EventsCard";
-import { fetchPersonProfile } from "../utilities/dbFunctions";
+import { fetchPersonProfile, fetchPersonEvents } from "../utilities/dbFunctions";
 
 const Profile = () => {
   const { profileId } = useParams();
   
   const [person, setPerson] = useState();
+  const [events, setEvents] = useState();
 
   // Modal states for different sections
   const [openBasicInfo, setOpenBasicInfo] = useState(false);
@@ -28,29 +27,16 @@ const Profile = () => {
   const [openAdditional, setOpenAdditional] = useState(false);
 
   useEffect(() => {
+
     fetchPersonProfile("User1", profileId).then((res) => {
       setPerson({...res});
-    }).catch((err) => console.log(err))
-  }, [profileId])
+    }).catch((err) => console.log(err));
+    
+    fetchPersonEvents("User1", profileId).then((res) => {
+      setEvents([...res]);
+    }).catch((err) => console.log(err));
+  }, [])
 
-
-  const events = [
-    {
-      id: "evt-001",
-      title: "Coffee Catchup",
-      date: new Date("2024-10-28"),
-      location: "Starbucks Downtown",
-      description: "Monthly coffee meetup",
-      type: "general",
-    },
-    {
-      id: "evt-002",
-      title: "Birthday Celebration",
-      date: new Date("2024-05-15"),
-      location: "Pizza Place",
-      type: "birthday",
-    },
-  ];
 
   // Helper function to update Firestore
   const updateProfile = async (newData) => {
