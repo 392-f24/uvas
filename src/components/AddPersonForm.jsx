@@ -87,6 +87,11 @@ const AddPersonForm = ({ user }) => {
   const [displayCustomTagForm, setDisplayCustomTagForm] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(null);
 
+  const [displayCustomContactForm, setDisplayCustomContactForm] =
+    useState(false);
+  const [customContactLabel, setCustomContactLabel] = useState("");
+  const [customContactValue, setCustomContactValue] = useState("");
+
   const toggleTag = (tag) => {
     const newTags = state.values.relationshipTags.includes(tag)
       ? state.values.relationshipTags.filter((t) => t !== tag)
@@ -120,6 +125,28 @@ const AddPersonForm = ({ user }) => {
         },
       });
       setAvatarPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleAddCustomContact = () => {
+    if (customContactLabel.trim() !== "" && customContactValue.trim() !== "") {
+      const updatedOthers = {
+        ...state.values.contactInfo.others,
+        [customContactLabel]: customContactValue,
+      };
+      change({
+        target: {
+          id: `contactInfo`,
+          value: {
+            ...state.values.contactInfo,
+            others: updatedOthers,
+          },
+        },
+      });
+
+      setCustomContactLabel("");
+      setCustomContactValue("");
+      setDisplayCustomContactForm(false);
     }
   };
 
@@ -191,6 +218,53 @@ const AddPersonForm = ({ user }) => {
       />
 
       {/* TODO: add space for social media fields */}
+      {Object.entries(state.values.contactInfo.others).map(
+        ([label, value], i) => (
+          <TextField key={i} label={label} value={value} disabled />
+        )
+      )}
+
+      <Button
+        variant="outlined"
+        onClick={() => setDisplayCustomContactForm(true)}
+      >
+        Add Custom Contact Info
+      </Button>
+
+      <Dialog
+        open={displayCustomContactForm}
+        onClose={() => setDisplayCustomContactForm(false)}
+      >
+        <DialogTitle>Add Custom Contact Info</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Label"
+            value={customContactLabel}
+            onChange={(e) => setCustomContactLabel(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            label="Value"
+            value={customContactValue}
+            onChange={(e) => setCustomContactValue(e.target.value)}
+            fullWidth
+            style={{ marginTop: "10px" }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleAddCustomContact}
+            variant="contained"
+            color="primary"
+          >
+            Add
+          </Button>
+          <Button onClick={() => setDisplayCustomContactForm(false)}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Typography component="p" color={theme.palette.secondary.dark}>
         + add custom
       </Typography>
@@ -215,11 +289,7 @@ const AddPersonForm = ({ user }) => {
         ))}
       </Box>
 
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={() => setDisplayCustomTagForm(true)}
-      >
+      <Button variant="outlined" onClick={() => setDisplayCustomTagForm(true)}>
         Add Custom Tag
       </Button>
 
