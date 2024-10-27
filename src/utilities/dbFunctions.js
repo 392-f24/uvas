@@ -1,5 +1,5 @@
 import { db } from './firebase'
-import { doc, setDoc, collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+import { doc, setDoc, collection, addDoc, getDoc, query, where } from 'firebase/firestore';
 
 // Constants for collections
 const USERS_COLLECTION = 'Users';
@@ -53,6 +53,27 @@ async function updateProfileData(userId, profileData) {
             success: true,
             message: 'Profile data updated successfully',
             updatedProfile: profileData
+        };
+    } catch (error) {
+        console.error("Error updating profile data:", error);
+        return {
+            success: false,
+            message: 'Failed to update profile data',
+            error: error.message
+        };
+    }
+}
+// Function to update event data for a specific user
+async function updateEventData(userId, eventData) {
+    try {
+        const userDocRef = getUserDoc(userId);
+
+        await updateDoc(userDocRef, eventData);
+
+        return {
+            success: true,
+            message: 'Profile data updated successfully',
+            updatedProfile: eventData
         };
     } catch (error) {
         console.error("Error updating profile data:", error);
