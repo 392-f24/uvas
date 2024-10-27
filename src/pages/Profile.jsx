@@ -1,20 +1,7 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Typography,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Paper,
-  Divider,
-} from "@mui/material";
-import { Schedule } from "@mui/icons-material";
+import { Box, Card, CardContent, Divider } from "@mui/material";
 // import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 // import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
@@ -26,8 +13,7 @@ import BasicInfoHeader from "../components/Profile/BasicInfoHeader";
 import ImportantDates from "../components/Profile/ImportantDates";
 import ContactInfo from "../components/Profile/ContactInfo";
 import AdditionalInfo from "../components/Profile/AdditionalInfo";
-
-import EmptyState from "../components/Profile/EmptyState";
+import EventsCard from "../components/Profile/EventsCard";
 
 const Profile = () => {
   const { profileId } = useParams();
@@ -93,33 +79,22 @@ const Profile = () => {
   const [openAdditional, setOpenAdditional] = useState(false);
 
   const events = [
-    // {
-    //   id: "evt-001",
-    //   title: "Coffee Catchup",
-    //   date: new Date("2024-10-28"),
-    //   location: "Starbucks Downtown",
-    //   description: "Monthly coffee meetup",
-    //   type: "general",
-    // },
-    // {
-    //   id: "evt-002",
-    //   title: "Birthday Celebration",
-    //   date: new Date("2024-05-15"),
-    //   location: "Pizza Place",
-    //   type: "birthday",
-    // },
+    {
+      id: "evt-001",
+      title: "Coffee Catchup",
+      date: new Date("2024-10-28"),
+      location: "Starbucks Downtown",
+      description: "Monthly coffee meetup",
+      type: "general",
+    },
+    {
+      id: "evt-002",
+      title: "Birthday Celebration",
+      date: new Date("2024-05-15"),
+      location: "Pizza Place",
+      type: "birthday",
+    },
   ];
-
-  const getEventTypeColor = (type) => {
-    switch (type) {
-      case "birthday":
-        return "primary";
-      case "anniversary":
-        return "secondary";
-      default:
-        return "default";
-    }
-  };
 
   // Helper function to update Firestore
   const updateProfile = async (newData) => {
@@ -138,7 +113,7 @@ const Profile = () => {
         maxWidth: "lg",
         mx: "auto",
         p: 2,
-        bgcolor: "#f5f5f5",
+        bgcolor: "#f5f5f5", //TODO: add to theme
         minHeight: "100vh",
       }}
     >
@@ -149,6 +124,7 @@ const Profile = () => {
         relationshipTags={person.relationshipTags}
         OnEdit={() => setOpenBasicInfo(true)}
       />
+
       {/* Main Info Card */}
       <Card
         sx={{
@@ -172,83 +148,9 @@ const Profile = () => {
           <AdditionalInfo occupation={person.occupation} notes={person.notes} />
         </CardContent>
       </Card>
-      {/* Events Card */}
-      <Card
-        sx={{
-          bgcolor: "#ffffff",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-        }}
-      >
-        <CardContent>
-          <Typography
-            variant="subtitle1"
-            fontWeight="bold"
-            gutterBottom
-            color="primary"
-          >
-            Upcoming Events
-          </Typography>
-          {events.length > 0 ? (
-            <List disablePadding>
-              {events.map((event) => (
-                <ListItem
-                  key={event.id}
-                  component={Paper}
-                  variant="outlined"
-                  sx={{
-                    mb: 1,
-                    p: 1,
-                    bgcolor: "#fafafa",
-                    border: "1px solid #eee",
-                  }}
-                >
-                  <ListItemIcon sx={{ minWidth: 40 }}>
-                    <Schedule fontSize="small" color="action" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        {event.title}
-                        <Chip
-                          label={event.type}
-                          color={getEventTypeColor(event.type)}
-                          size="small"
-                          sx={{ height: 20 }}
-                        />
-                      </Box>
-                    }
-                    secondary={
-                      <>
-                        {new Date(event.date).toLocaleDateString()}
-                        {event.location && ` • ${event.location}`}
-                        {event.description && (
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ mt: 0.5 }}
-                          >
-                            {event.description}
-                          </Typography>
-                        )}
-                      </>
-                    }
-                  />
-                </ListItem>
-              ))}
-            </List>
-          ) : (
-            <Box sx={{ py: 2 }}>
-              <EmptyState text="No upcoming events. Click to add an event." />
-            </Box>
-          )}
-        </CardContent>
-      </Card>
+
+      <EventsCard events={events} />
+
       {/* Edit Modals */}
       <BasicInfoHeaderEdit
         open={openBasicInfo}
