@@ -79,7 +79,7 @@ export const fetchPeople = async (userId) => {
                 id: personId,
                 name: `${personData.firstName} ${personData.lastName}`,
                 occupation: personData.occupation,
-                tags: personData.relationshipTag,
+                tags: personData.relationshipTags,
                 avatar: personData.avatar || null, // Optional: add avatar
             };
         });

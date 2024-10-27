@@ -12,7 +12,7 @@ export const dummyData = {
             "phoneNumber": "333-423-2343",
             "others": {}
           },
-          "relationshipTag": ["Friend"],
+          "relationshipTags": ["Friend"],
           "birthday": {
             "date": "10-30-2024",
             "remind": true
@@ -36,7 +36,7 @@ export const dummyData = {
             "phoneNumber": "333-456-7890",
             "others": {}
           },
-          "relationshipTag": ["Family"],
+          "relationshipTags": ["Family"],
           "birthday": {
             "date": "11-03-2024",
             "remind": true
@@ -60,7 +60,7 @@ export const dummyData = {
             "phoneNumber": "333-789-2345",
             "others": {}
           },
-          "relationshipTag": ["Coworker"],
+          "relationshipTags": ["Coworker"],
           "birthday": {
             "date": "08-15-2024",
             "remind": false
@@ -84,7 +84,7 @@ export const dummyData = {
             "phoneNumber": "333-890-4567",
             "others": {}
           },
-          "relationshipTag": ["Friend"],
+          "relationshipTags": ["Friend"],
           "birthday": {
             "date": "",
             "remind": false
@@ -108,7 +108,7 @@ export const dummyData = {
             "phoneNumber": "333-678-3456",
             "others": {}
           },
-          "relationshipTag": ["Coworker"],
+          "relationshipTags": ["Coworker"],
           "birthday": {
             "date": "",
             "remind": false
@@ -132,7 +132,7 @@ export const dummyData = {
             "phoneNumber": "333-567-2345",
             "others": {}
           },
-          "relationshipTag": ["Family"],
+          "relationshipTags": ["Family"],
           "birthday": {
             "date": "",
             "remind": false
@@ -156,7 +156,7 @@ export const dummyData = {
             "phoneNumber": "333-456-3456",
             "others": {}
           },
-          "relationshipTag": ["Friend"],
+          "relationshipTags": ["Friend"],
           "birthday": {
             "date": "",
             "remind": false
@@ -180,7 +180,7 @@ export const dummyData = {
             "phoneNumber": "333-654-7890",
             "others": {}
           },
-          "relationshipTag": ["Coworker"],
+          "relationshipTags": ["Coworker"],
           "birthday": {
             "date": "",
             "remind": false
@@ -204,7 +204,7 @@ export const dummyData = {
             "phoneNumber": "333-789-6543",
             "others": {}
           },
-          "relationshipTag": ["Friend"],
+          "relationshipTags": ["Friend"],
           "birthday": {
             "date": "",
             "remind": false
@@ -228,7 +228,7 @@ export const dummyData = {
             "phoneNumber": "333-345-5678",
             "others": {}
           },
-          "relationshipTag": ["Family"],
+          "relationshipTags": ["Family"],
           "birthday": {
             "date": "",
             "remind": false
