@@ -48,6 +48,10 @@ import {
 // components
 import BasicInfoEdit from "../components/Profile/BasicInfoEdit";
 import ContactEdit from "../components/Profile/ContactEdit";
+import ContactInfo from "../components/Profile/ContactInfo";
+
+import EditButton from "../components/Profile/EditButton";
+import EmptyState from "../components/Profile/EmptyState";
 
 const Profile = () => {
   const { profileId } = useParams();
@@ -147,23 +151,6 @@ const Profile = () => {
     }
   };
 
-  const EmptyState = ({ text }) => (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        color: "text.disabled",
-        gap: 1,
-        fontSize: "0.875rem",
-      }}
-    >
-      <Add fontSize="small" />
-      <Typography variant="body2" color="text.disabled">
-        {text}
-      </Typography>
-    </Box>
-  );
-
   // Helper function to update Firestore
   const updateProfile = async (newData) => {
     try {
@@ -174,15 +161,6 @@ const Profile = () => {
       console.error("Error updating profile:", error);
     }
   };
-
-  // Contact Information Edit Form
-
-  // Add edit buttons to your existing sections
-  const EditButton = ({ onClick }) => (
-    <IconButton size="small" onClick={onClick} sx={{ ml: 1 }}>
-      <Edit fontSize="small" />
-    </IconButton>
-  );
 
   return (
     <Box
@@ -313,77 +291,11 @@ const Profile = () => {
 
           <Divider sx={{ my: 2 }} />
 
-          {/* Contact Info */}
-          <Box
-            sx={{
-              display: "flex",
-              alignItem: "center",
-            }}
-          >
-            <Typography
-              variant="subtitle1"
-              fontWeight="bold"
-              gutterBottom
-              color="primary"
-            >
-              Contact Information
-            </Typography>
-            <EditButton onClick={() => setOpenContact(true)} />
-          </Box>
-          <List dense disablePadding>
-            <ListItem disablePadding sx={{ mb: 1 }}>
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <Email fontSize="small" color="action" />
-              </ListItemIcon>
-              {person.contactInfo?.email ? (
-                <ListItemText primary={person.contactInfo.email} />
-              ) : (
-                <ListItemText primary={<EmptyState text="Add email" />} />
-              )}
-            </ListItem>
-            <ListItem disablePadding sx={{ mb: 1 }}>
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <Phone fontSize="small" color="action" />
-              </ListItemIcon>
-              {person.contactInfo?.phoneNumber ? (
-                <ListItemText primary={person.contactInfo.phoneNumber} />
-              ) : (
-                <ListItemText
-                  primary={<EmptyState text="Add phone number" />}
-                />
-              )}
-            </ListItem>
-            <ListItem disablePadding sx={{ mb: 1 }}>
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <LocationOn fontSize="small" color="action" />
-              </ListItemIcon>
-              {person.address ? (
-                <ListItemText primary={person.address} />
-              ) : (
-                <ListItemText primary={<EmptyState text="Add address" />} />
-              )}
-            </ListItem>
-            <ListItem disablePadding sx={{ mb: 1 }}>
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <Instagram fontSize="small" color="action" />
-              </ListItemIcon>
-              {person.contactInfo?.others?.Instagram ? (
-                <ListItemText primary={person.contactInfo.others.Instagram} />
-              ) : (
-                <ListItemText primary={<EmptyState text="Add Instagram" />} />
-              )}
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <LinkedIn fontSize="small" color="action" />
-              </ListItemIcon>
-              {person.contactInfo?.others?.LinkedIn ? (
-                <ListItemText primary={person.contactInfo.others.LinkedIn} />
-              ) : (
-                <ListItemText primary={<EmptyState text="Add LinkedIn" />} />
-              )}
-            </ListItem>
-          </List>
+          <ContactInfo
+            contactInfo={person.contactInfo}
+            address={person.address}
+            OnEdit={() => setOpenContact(true)}
+          />
 
           <Divider sx={{ my: 2 }} />
 
