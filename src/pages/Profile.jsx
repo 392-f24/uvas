@@ -47,7 +47,35 @@ import {
 const Profile = () => {
   const { profileId } = useParams();
 
-  const [person, setPerson] = useState({
+  const personFullInfo = {
+    id: profileId,
+    firstName: "Kathryn",
+    lastName: "Murphy",
+    avatar: "https://example.com/avatar.jpg",
+    address: "2100 Campus Drive, Evanston, IL",
+    contactInfo: {
+      email: "kathryn.murphy@northwestern.edu",
+      phoneNumber: "+1 (847) 555-0123",
+      others: {
+        Instagram: "@kathrynm",
+        LinkedIn: "linkedin.com/in/kathrynm",
+      },
+    },
+    relationshipTags: ["Friend", "Roommate"],
+    birthday: {
+      date: new Date("2001-05-15"),
+      remind: true,
+    },
+    occupation: "Student at Northwestern",
+    notes: "Met during freshman orientation. Loves photography and hiking.",
+    anniversary: {
+      date: new Date("2023-09-01"),
+      remind: true,
+      description: "Friendship anniversary",
+    },
+  };
+
+  const personSomeEmpty = {
     id: profileId,
     firstName: "Kathryn",
     lastName: "Murphy",
@@ -69,7 +97,9 @@ const Profile = () => {
     occupation: "", // Empty for demo
     notes: "Met during freshman orientation. Loves photography and hiking.",
     anniversary: null, // Empty for demo
-  });
+  };
+
+  const [person, setPerson] = useState(personSomeEmpty);
 
   // Modal states for different sections
   const [openBasicInfo, setOpenBasicInfo] = useState(false);
@@ -85,7 +115,23 @@ const Profile = () => {
     }))
   );
 
-  const events = []; // Empty for demo
+  const events = [
+    // {
+    //   id: "evt-001",
+    //   title: "Coffee Catchup",
+    //   date: new Date("2024-10-28"),
+    //   location: "Starbucks Downtown",
+    //   description: "Monthly coffee meetup",
+    //   type: "general",
+    // },
+    // {
+    //   id: "evt-002",
+    //   title: "Birthday Celebration",
+    //   date: new Date("2024-05-15"),
+    //   location: "Pizza Place",
+    //   type: "birthday",
+    // },
+  ];
 
   const getInitials = () => {
     return `${person.firstName[0]}${
