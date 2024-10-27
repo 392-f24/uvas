@@ -16,6 +16,7 @@ import { Schedule } from "@mui/icons-material";
 import EmptyState from "./EmptyState";
 
 const EventsCard = ({ events }) => {
+  events.map((event) => console.log(event));
   const getEventTypeColor = (type) => {
     switch (type) {
       case "birthday":
@@ -45,9 +46,9 @@ const EventsCard = ({ events }) => {
         </Typography>
         {events.length > 0 ? (
           <List disablePadding>
-            {events.map((event) => (
+            {events.map((event, index) => (
               <ListItem
-                key={event.id}
+                key={index}
                 component={Paper}
                 variant="outlined"
                 sx={{
@@ -81,7 +82,7 @@ const EventsCard = ({ events }) => {
                   secondary={
                     <>
                       <span>
-                        {new Date(event.date).toLocaleDateString()}
+                        {event.date}
                         {event.location && ` • ${event.location}`}
                       </span>
                       {event.description && (

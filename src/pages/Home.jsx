@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import {
   Typography,
@@ -12,44 +12,21 @@ import {
 import AddPersonForm from "../components/AddPersonForm";
 import ProfileCard from "../components/ProfileCard";
 import ReminderCard from "../components/ReminderCard";
-
-const people = [
-  {
-    name: "Kathryn Murphy",
-    occupation: "Student at Northwestern",
-    tags: ["Friend", "Roommate"],
-  },
-  {
-    name: "Cameron Williamson",
-    occupation: "Student at Northwestern",
-    tags: ["Classmate"],
-  },
-  {
-    name: "Marvin McKinney",
-    occupation: "Barista",
-    tags: ["Acquaintance"],
-  },
-  {
-    name: "Darlene Robertson",
-    occupation: "Software Engineer at Figma",
-    tags: ["Coworker"],
-  }
-]
-
-const reminders = [
-  {
-    title: "Cameron's 23rd Birthday",
-    date: "Today",
-  },
-  {
-    title: "Kathryn's 25th Birthday",
-    date: "Yesterday",
-  }
-]
+import { fetchPeople } from "../utilities/dbFunctions";
+import { fetchReminders } from "../utilities/reminderFunction";
+import { useNavigate, Link } from "react-router-dom";
 
 const Home = () => {
   const theme = useTheme();
   const [displayForm, setDisplayForm] = useState(false);
+  const [people, setPeople] = useState([]);
+  const [reminders, setReminders] = useState([]);
+
+  const navigate = useNavigate();
+  const handleNavigate = (personId) => {
+    console.log("HERE");
+    navigate(`/profile/${personId}`);
+  }
 
   const openForm = () => {
     setDisplayForm(true);
@@ -58,6 +35,16 @@ const Home = () => {
   const closeForm = () => {
     setDisplayForm(false);
   };
+
+  useEffect(() => {
+    fetchPeople("User1").then((res) => {
+      setPeople(res);
+    }).catch((err) => (console.log(err)))
+
+    fetchReminders("User1").then((res) => {
+      setReminders(res);
+    }).catch((err) => (console.log(err)))
+  }, [])
 
   return (
     <Box
@@ -96,15 +83,17 @@ const Home = () => {
         }}
       >
         {people.map((person, index) => (
-          <ProfileCard
-            key={index} // CHANGE THIS TO UID WHEN DB IS READY
-            name={person.name}
-            occupation={person.occupation}
-            tags={person.tags}>
-          </ProfileCard>
+          <Link to={`/profile/${person.id}`} style={{ textDecoration: 'none' }} key={index} >
+            <ProfileCard
+              name={person.name}
+              occupation={person.occupation}
+              tags={person.tags}
+              >
+            </ProfileCard>
+          </Link>
         ))}
       </Box>
-      
+
       <Button
         variant="contained"
         color="primary"

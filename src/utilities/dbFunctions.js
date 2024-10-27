@@ -167,6 +167,29 @@ export const fetchEvents = async (userId) => {
     }
 };
 
+export const fetchPersonEvents = async(userId, personId) => {
+    try {
+        const userSnap = await getDoc(getUserDoc(userId));
+        if (userSnap.exists()) {
+            const events = userSnap.data().Events;
+            
+            const filteredEvents = events.filter(eventObj => {
+                const eventDetails = Object.values(eventObj)[0];
+                return eventDetails.people.includes(personId);
+            });
+
+            const eventValues = filteredEvents.map((event) => Object.values(event)[0]);
+
+            return eventValues;
+        }
+        return [];
+        
+    } catch (error) {
+        console.error("Error fetching person events: ", error);
+        return [];
+    }
+}
+
 // Function to filter people by relationship tags
 export const filterPeopleByTag = async (userId, tag) => {
     const people = await fetchPeople(userId);

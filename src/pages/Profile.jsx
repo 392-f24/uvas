@@ -1,9 +1,7 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Card, CardContent, Divider } from "@mui/material";
-// import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-// import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { Box, Card, CardContent, Divider, Typography } from "@mui/material";
 
 // components
 import BasicInfoHeaderEdit from "../components/Profile/BasicInfoHeaderEdit";
@@ -14,63 +12,13 @@ import ImportantDates from "../components/Profile/ImportantDates";
 import ContactInfo from "../components/Profile/ContactInfo";
 import AdditionalInfo from "../components/Profile/AdditionalInfo";
 import EventsCard from "../components/Profile/EventsCard";
+import { fetchPersonProfile, fetchPersonEvents } from "../utilities/dbFunctions";
 
 const Profile = () => {
   const { profileId } = useParams();
-
-  const personFullInfo = {
-    id: profileId,
-    firstName: "Kathryn",
-    lastName: "Murphy",
-    avatar: "KM",
-    address: "2100 Campus Drive, Evanston, IL",
-    contactInfo: {
-      email: "kathryn.murphy@northwestern.edu",
-      phoneNumber: "+1 (847) 555-0123",
-      others: {
-        Instagram: "@kathrynm",
-        LinkedIn: "linkedin.com/in/kathrynm",
-      },
-    },
-    relationshipTags: ["Friend", "Roommate", "Classmate"],
-    birthday: {
-      date: new Date("2001-05-15"),
-      remind: true,
-    },
-    occupation: "Student at Northwestern",
-    notes: "Met during freshman orientation. Loves photography and hiking.",
-    anniversary: {
-      date: new Date("2023-09-01"),
-      remind: true,
-      description: "Friendship anniversary",
-    },
-  };
-
-  const personSomeEmpty = {
-    id: profileId,
-    firstName: "Kathryn",
-    lastName: "Murphy",
-    avatar: "KM",
-    address: "", // Empty for demo
-    contactInfo: {
-      email: "kathryn.murphy@northwestern.edu",
-      phoneNumber: "", // Empty for demo
-      others: {
-        Instagram: "@kathrynm",
-        LinkedIn: "", // Empty for demo
-      },
-    },
-    relationshipTags: ["Friend", "Roommate"],
-    birthday: {
-      date: new Date("2001-05-15"),
-      remind: true,
-    },
-    occupation: "", // Empty for demo
-    notes: "Met during freshman orientation. Loves photography and hiking.",
-    anniversary: null, // Empty for demo
-  };
-
-  const [person, setPerson] = useState(personSomeEmpty);
+  
+  const [person, setPerson] = useState();
+  const [events, setEvents] = useState();
 
   // Modal states for different sections
   const [openBasicInfo, setOpenBasicInfo] = useState(false);
@@ -78,23 +26,17 @@ const Profile = () => {
   const [openContact, setOpenContact] = useState(false);
   const [openAdditional, setOpenAdditional] = useState(false);
 
-  const events = [
-    {
-      id: "evt-001",
-      title: "Coffee Catchup",
-      date: new Date("2024-10-28"),
-      location: "Starbucks Downtown",
-      description: "Monthly coffee meetup",
-      type: "general",
-    },
-    {
-      id: "evt-002",
-      title: "Birthday Celebration",
-      date: new Date("2024-05-15"),
-      location: "Pizza Place",
-      type: "birthday",
-    },
-  ];
+  useEffect(() => {
+
+    fetchPersonProfile("User1", profileId).then((res) => {
+      setPerson({...res});
+    }).catch((err) => console.log(err));
+    
+    fetchPersonEvents("User1", profileId).then((res) => {
+      setEvents([...res]);
+    }).catch((err) => console.log(err));
+  }, [])
+
 
   // Helper function to update Firestore
   const updateProfile = async (newData) => {
@@ -106,6 +48,12 @@ const Profile = () => {
       console.error("Error updating profile:", error);
     }
   };
+
+  if (!person) {
+    return (
+      <Typography>Loading...</Typography>
+    )
+  }
 
   return (
     <Box
