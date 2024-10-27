@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Card, CardContent, Divider } from "@mui/material";
+import { Box, Card, CardContent, Divider, Typography } from "@mui/material";
 // import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 // import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
@@ -14,69 +14,25 @@ import ImportantDates from "../components/Profile/ImportantDates";
 import ContactInfo from "../components/Profile/ContactInfo";
 import AdditionalInfo from "../components/Profile/AdditionalInfo";
 import EventsCard from "../components/Profile/EventsCard";
+import { fetchPersonProfile } from "../utilities/dbFunctions";
 
 const Profile = () => {
   const { profileId } = useParams();
-
-  const personFullInfo = {
-    id: profileId,
-    firstName: "Kathryn",
-    lastName: "Murphy",
-    avatar: "KM",
-    address: "2100 Campus Drive, Evanston, IL",
-    contactInfo: {
-      email: "kathryn.murphy@northwestern.edu",
-      phoneNumber: "+1 (847) 555-0123",
-      others: {
-        Instagram: "@kathrynm",
-        LinkedIn: "linkedin.com/in/kathrynm",
-      },
-    },
-    relationshipTags: ["Friend", "Roommate", "Classmate"],
-    birthday: {
-      date: new Date("2001-05-15"),
-      remind: true,
-    },
-    occupation: "Student at Northwestern",
-    notes: "Met during freshman orientation. Loves photography and hiking.",
-    anniversary: {
-      date: new Date("2023-09-01"),
-      remind: true,
-      description: "Friendship anniversary",
-    },
-  };
-
-  const personSomeEmpty = {
-    id: profileId,
-    firstName: "Kathryn",
-    lastName: "Murphy",
-    avatar: "KM",
-    address: "", // Empty for demo
-    contactInfo: {
-      email: "kathryn.murphy@northwestern.edu",
-      phoneNumber: "", // Empty for demo
-      others: {
-        Instagram: "@kathrynm",
-        LinkedIn: "", // Empty for demo
-      },
-    },
-    relationshipTags: ["Friend", "Roommate"],
-    birthday: {
-      date: new Date("2001-05-15"),
-      remind: true,
-    },
-    occupation: "", // Empty for demo
-    notes: "Met during freshman orientation. Loves photography and hiking.",
-    anniversary: null, // Empty for demo
-  };
-
-  const [person, setPerson] = useState(personSomeEmpty);
+  
+  const [person, setPerson] = useState();
 
   // Modal states for different sections
   const [openBasicInfo, setOpenBasicInfo] = useState(false);
   const [openDates, setOpenDates] = useState(false);
   const [openContact, setOpenContact] = useState(false);
   const [openAdditional, setOpenAdditional] = useState(false);
+
+  useEffect(() => {
+    fetchPersonProfile("User1", profileId).then((res) => {
+      setPerson({...res});
+    }).catch((err) => console.log(err))
+  }, [profileId])
+
 
   const events = [
     {
@@ -106,6 +62,12 @@ const Profile = () => {
       console.error("Error updating profile:", error);
     }
   };
+
+  if (!person) {
+    return (
+      <Typography>Loading...</Typography>
+    )
+  }
 
   return (
     <Box

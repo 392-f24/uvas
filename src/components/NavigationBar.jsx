@@ -16,8 +16,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 
-// temporarily add profile page for testing
-const pages = ["Home", "Timeline", "Profile"];
+const pages = ["Home", "Timeline"];
 
 const Logo = ({ small, onClick }) => (
   <Box
@@ -104,9 +103,6 @@ function ResponsiveAppBar() {
         break;
       case "Timeline":
         navigate("/timeline");
-        break;
-      case "Profile":
-        navigate("/profile/testID");
         break;
       default:
         break;
