@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -43,6 +44,10 @@ import {
 } from "@mui/icons-material";
 // import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 // import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+
+// components
+import BasicInfoEdit from "../components/Profile/BasicInfoEdit";
+import ContactEdit from "../components/Profile/ContactEdit";
 
 const Profile = () => {
   const { profileId } = useParams();
@@ -107,15 +112,6 @@ const Profile = () => {
   const [openContact, setOpenContact] = useState(false);
   const [openAdditional, setOpenAdditional] = useState(false);
 
-  // State for managing custom contact fields
-  //TODO: maybe just use person.contactInfo.others
-  const [customContacts, setCustomContacts] = useState(
-    Object.entries(person.contactInfo?.others || {}).map(([key, value]) => ({
-      platform: key,
-      value: value,
-    }))
-  );
-
   const events = [
     // {
     //   id: "evt-001",
@@ -179,157 +175,7 @@ const Profile = () => {
     }
   };
 
-  const BasicInfoEdit = () => (
-    <Dialog
-      open={openBasicInfo}
-      onClose={() => setOpenBasicInfo(false)}
-      maxWidth="sm"
-      fullWidth
-    >
-      <DialogTitle>Edit Basic Information</DialogTitle>
-      <DialogContent>
-        <Stack spacing={2} sx={{ mt: 2 }}>
-          <TextField
-            label="First Name"
-            defaultValue={person.firstName}
-            fullWidth
-          />
-          <TextField
-            label="Last Name"
-            defaultValue={person.lastName}
-            fullWidth
-          />
-          <TextField
-            label="Relationship Tags"
-            defaultValue={person.relationshipTags?.join(", ")}
-            helperText="Separate tags with commas"
-            fullWidth
-          />
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => setOpenBasicInfo(false)}>Cancel</Button>
-        <Button
-          variant="contained"
-          onClick={() => {
-            // TODO: Handle save
-            setOpenBasicInfo(false);
-          }}
-        >
-          Save
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-
   // Contact Information Edit Form
-  const ContactEdit = () => (
-    <Dialog
-      open={openContact}
-      onClose={() => setOpenContact(false)}
-      maxWidth="sm"
-      fullWidth
-    >
-      <DialogTitle>Edit Contact Information</DialogTitle>
-      <DialogContent>
-        <Stack spacing={2} sx={{ mt: 2 }}>
-          <TextField
-            label="Email"
-            defaultValue={person.contactInfo?.email}
-            fullWidth
-            type="email"
-          />
-          <TextField
-            label="Phone Number"
-            defaultValue={person.contactInfo?.phoneNumber}
-            fullWidth
-          />
-          <TextField
-            label="Address"
-            defaultValue={person.address}
-            fullWidth
-            multiline
-            rows={2}
-          />
-
-          {/* Dynamic social media/contact fields */}
-          {customContacts.map((contact, index) => (
-            <Box key={index} sx={{ display: "flex", gap: 1 }}>
-              <TextField
-                label="Platform"
-                value={contact.platform}
-                onChange={(e) => {
-                  const newContacts = [...customContacts];
-                  newContacts[index].platform = e.target.value;
-                  setCustomContacts(newContacts);
-                }}
-                sx={{ flex: 1 }}
-              />
-              <TextField
-                label="Value"
-                value={contact.value}
-                onChange={(e) => {
-                  const newContacts = [...customContacts];
-                  newContacts[index].value = e.target.value;
-                  setCustomContacts(newContacts);
-                }}
-                sx={{ flex: 2 }}
-              />
-              <IconButton
-                color="error"
-                onClick={() => {
-                  const newContacts = customContacts.filter(
-                    (_, i) => i !== index
-                  );
-                  setCustomContacts(newContacts);
-                }}
-              >
-                <Delete />
-              </IconButton>
-            </Box>
-          ))}
-
-          <Button
-            startIcon={<Add />}
-            onClick={() => {
-              setCustomContacts([
-                ...customContacts,
-                { platform: "", value: "" },
-              ]);
-            }}
-          >
-            Add Contact Method
-          </Button>
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => setOpenContact(false)}>Cancel</Button>
-        <Button
-          variant="contained"
-          onClick={() => {
-            // Handle save
-            const others = {};
-            customContacts.forEach((contact) => {
-              if (contact.platform && contact.value) {
-                others[contact.platform] = contact.value;
-              }
-            });
-
-            const newContactInfo = {
-              ...person.contactInfo,
-              others,
-            };
-
-            // TODO: might just use utility functions
-            updateProfile({ contactInfo: newContactInfo });
-            setOpenContact(false);
-          }}
-        >
-          Save
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
 
   // Add edit buttons to your existing sections
   const EditButton = ({ onClick }) => (
@@ -653,8 +499,18 @@ const Profile = () => {
         </CardContent>
       </Card>
       {/* Edit Modals */}
-      <BasicInfoEdit />
-      <ContactEdit />
+      <BasicInfoEdit
+        open={openBasicInfo}
+        onClose={() => setOpenBasicInfo(false)}
+        person={person}
+      />
+
+      <ContactEdit
+        open={openContact}
+        onClose={() => setOpenContact(false)}
+        person={person}
+        updateProfile={updateProfile}
+      />
     </Box>
   );
 };
