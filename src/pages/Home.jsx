@@ -14,12 +14,19 @@ import ProfileCard from "../components/ProfileCard";
 import ReminderCard from "../components/ReminderCard";
 import { fetchPeople } from "../utilities/dbFunctions";
 import { fetchReminders } from "../utilities/reminderFunction";
+import { useNavigate, Link } from "react-router-dom";
 
 const Home = () => {
   const theme = useTheme();
   const [displayForm, setDisplayForm] = useState(false);
   const [people, setPeople] = useState([]);
   const [reminders, setReminders] = useState([]);
+
+  const navigate = useNavigate();
+  const handleNavigate = (personId) => {
+    console.log("HERE");
+    navigate(`/profile/${personId}`);
+  }
 
   const openForm = () => {
     setDisplayForm(true);
@@ -33,7 +40,7 @@ const Home = () => {
     fetchPeople("User1").then((res) => {
       setPeople(res);
     }).catch((err) => (console.log(err)))
-    
+
     fetchReminders("User1").then((res) => {
       setReminders(res);
     }).catch((err) => (console.log(err)))
@@ -76,15 +83,17 @@ const Home = () => {
         }}
       >
         {people.map((person, index) => (
-          <ProfileCard
-            key={index} // CHANGE THIS TO UID WHEN DB IS READY
-            name={person.name}
-            occupation={person.occupation}
-            tags={person.tags}>
-          </ProfileCard>
+          <Link to={`/profile/${person.id}`} style={{ textDecoration: 'none' }} key={index} >
+            <ProfileCard
+              name={person.name}
+              occupation={person.occupation}
+              tags={person.tags}
+              >
+            </ProfileCard>
+          </Link>
         ))}
       </Box>
-      
+
       <Button
         variant="contained"
         color="primary"
