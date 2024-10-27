@@ -42,6 +42,27 @@ export const addPerson = async (userId, person) => {
     }
 };
 
+// Function to update profile data for a specific user
+async function updateProfileData(userId, profileData) {
+    try {
+        const userDocRef = getUserDoc(userId);
+
+        await updateDoc(userDocRef, profileData);
+
+        return {
+            success: true,
+            message: 'Profile data updated successfully',
+            updatedProfile: profileData
+        };
+    } catch (error) {
+        console.error("Error updating profile data:", error);
+        return {
+            success: false,
+            message: 'Failed to update profile data',
+            error: error.message
+        };
+    }
+}
 // Function to fetch all people for a user
 export const fetchPeople = async (userId) => {
     try {
