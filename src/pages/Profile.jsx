@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Avatar,
@@ -12,6 +13,18 @@ import {
   ListItemText,
   Paper,
   Divider,
+  IconButton,
+  Modal,
+  TextField,
+  Button,
+  Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControlLabel,
+  Switch,
+  InputAdornment,
 } from "@mui/material";
 import {
   CalendarToday,
@@ -25,11 +38,16 @@ import {
   Add,
   Instagram,
   LinkedIn,
+  Edit,
+  Delete,
 } from "@mui/icons-material";
+// import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+// import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
 const Profile = () => {
   const { profileId } = useParams();
-  const person = {
+
+  const [person, setPerson] = useState({
     id: profileId,
     firstName: "Kathryn",
     lastName: "Murphy",
@@ -51,7 +69,21 @@ const Profile = () => {
     occupation: "", // Empty for demo
     notes: "Met during freshman orientation. Loves photography and hiking.",
     anniversary: null, // Empty for demo
-  };
+  });
+
+  // Modal states for different sections
+  const [openBasicInfo, setOpenBasicInfo] = useState(false);
+  const [openDates, setOpenDates] = useState(false);
+  const [openContact, setOpenContact] = useState(false);
+  const [openAdditional, setOpenAdditional] = useState(false);
+
+  // State for managing custom contact fields
+  const [customContacts, setCustomContacts] = useState(
+    Object.entries(person.contactInfo?.others || {}).map(([key, value]) => ({
+      platform: key,
+      value: value,
+    }))
+  );
 
   const events = []; // Empty for demo
 
@@ -89,6 +121,56 @@ const Profile = () => {
     </Box>
   );
 
+  const BasicInfoEdit = () => (
+    <Dialog
+      open={openBasicInfo}
+      onClose={() => setOpenBasicInfo(false)}
+      maxWidth="sm"
+      fullWidth
+    >
+      <DialogTitle>Edit Basic Information</DialogTitle>
+      <DialogContent>
+        <Stack spacing={2} sx={{ mt: 2 }}>
+          <TextField
+            label="First Name"
+            defaultValue={person.firstName}
+            fullWidth
+          />
+          <TextField
+            label="Last Name"
+            defaultValue={person.lastName}
+            fullWidth
+          />
+          <TextField
+            label="Relationship Tags"
+            defaultValue={person.relationshipTags?.join(", ")}
+            helperText="Separate tags with commas"
+            fullWidth
+          />
+        </Stack>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpenBasicInfo(false)}>Cancel</Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            // TODO: Handle save
+            setOpenBasicInfo(false);
+          }}
+        >
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+
+  // Add edit buttons to your existing sections
+  const EditButton = ({ onClick }) => (
+    <IconButton size="small" onClick={onClick} sx={{ ml: 1 }}>
+      <Edit fontSize="small" />
+    </IconButton>
+  );
+
   return (
     <Box
       sx={{
@@ -99,23 +181,23 @@ const Profile = () => {
         minHeight: "100vh",
       }}
     >
-      {/* Header */}
+      {/* Header with Edit Button */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 2 }}>
         <Avatar
           src={person.avatar}
           alt={person.firstName}
-          sx={{
-            width: 80,
-            height: 80,
-            bgcolor: "primary.main",
-          }}
+          sx={{ width: 80, height: 80, bgcolor: "primary.main" }}
         >
           {getInitials()}
         </Avatar>
         <Box sx={{ flex: 1 }}>
-          <Typography variant="h5" component="h1" gutterBottom>
-            {person.firstName} {person.lastName}
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Typography variant="h5" component="h1" gutterBottom>
+              {person.firstName} {person.lastName}
+            </Typography>
+            {/* relationship tags */}
+            <EditButton onClick={() => setOpenBasicInfo(true)} />
+          </Box>
           <Box
             sx={{
               display: "flex",
@@ -151,14 +233,17 @@ const Profile = () => {
       >
         <CardContent>
           {/* Important Dates */}
-          <Typography
-            variant="subtitle1"
-            fontWeight="bold"
-            gutterBottom
-            color="primary"
-          >
-            Important Dates
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Typography
+              variant="subtitle1"
+              fontWeight="bold"
+              gutterBottom
+              color="primary"
+            >
+              Important Dates
+            </Typography>
+            {/* <EditButton onClick={() => setOpenDates(true)} /> */}
+          </Box>
           <List dense disablePadding>
             <ListItem disablePadding sx={{ mb: 1 }}>
               <ListItemIcon sx={{ minWidth: 40 }}>
@@ -391,6 +476,8 @@ const Profile = () => {
           )}
         </CardContent>
       </Card>
+      {/* Edit Modals */}
+      <BasicInfoEdit />
     </Box>
   );
 };
