@@ -17,12 +17,12 @@ function ReminderCard({ title, date }) {
             boxShadow: "none"
         }}>
             <Grid2 container direction="column">
-                <Grid2 item>
+                <Grid2>
                     <Typography variant="h6" textAlign="left" color="black">
                         {title}
                     </Typography>
                 </Grid2>
-                <Grid2 item>
+                <Grid2>
                     <Typography variant="body1" textAlign="left" color="textSecondary">
                         {date}
                     </Typography>

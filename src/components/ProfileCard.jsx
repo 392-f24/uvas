@@ -20,22 +20,22 @@ function ProfileCard({ name, occupation, tags }) {
             boxShadow: "none"
         }}>
             <Grid2 container spacing={2} alignItems="center">
-                <Grid2 item xs={3}>
+                <Grid2 xs={3}>
                     <Avatar sx={{ width: 64, height: 64 }} />
                 </Grid2>
-                <Grid2 item xs={9}>
+                <Grid2 xs={9}>
                     <Grid2 container direction="column">
-                        <Grid2 item>
+                        <Grid2>
                             <Typography variant="h6" textAlign="left" color="black">
                                 {name}
                             </Typography>
                         </Grid2>
-                        <Grid2 item>
+                        <Grid2>
                             <Typography variant="body1" textAlign="left" color="textSecondary">
                                 {occupation}
                             </Typography>
                         </Grid2>
-                        <Grid2 item sx={{ mt: 1 }}>
+                        <Grid2 sx={{ mt: 1 }}>
                             <Grid2 container direction="row" spacing={1}>
                                 {tags.map((tag, index) => (
                                     <Chip key={index} label={tag} color="primary" />
