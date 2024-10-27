@@ -49,6 +49,7 @@ import {
 import BasicInfoEdit from "../components/Profile/BasicInfoEdit";
 import ContactEdit from "../components/Profile/ContactEdit";
 import ContactInfo from "../components/Profile/ContactInfo";
+import AdditionalInfo from "../components/Profile/AdditionalInfo";
 
 import EditButton from "../components/Profile/EditButton";
 import EmptyState from "../components/Profile/EmptyState";
@@ -299,37 +300,7 @@ const Profile = () => {
 
           <Divider sx={{ my: 2 }} />
 
-          {/* Additional Info */}
-          <Typography
-            variant="subtitle1"
-            fontWeight="bold"
-            gutterBottom
-            color="primary"
-          >
-            Additional Information
-          </Typography>
-          <List dense disablePadding>
-            <ListItem disablePadding sx={{ mb: 1 }}>
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <Work fontSize="small" color="action" />
-              </ListItemIcon>
-              {person.occupation ? (
-                <ListItemText primary={person.occupation} />
-              ) : (
-                <ListItemText primary={<EmptyState text="Add occupation" />} />
-              )}
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <Notes fontSize="small" color="action" />
-              </ListItemIcon>
-              {person.notes ? (
-                <ListItemText primary={person.notes} />
-              ) : (
-                <ListItemText primary={<EmptyState text="Add notes" />} />
-              )}
-            </ListItem>
-          </List>
+          <AdditionalInfo occupation={person.occupation} notes={person.notes} />
         </CardContent>
       </Card>
 

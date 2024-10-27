@@ -117,7 +117,7 @@ const ContactEdit = ({ open, onClose, person, updateProfile }) => {
 
             // TODO: might just use utility functions
             updateProfile({ contactInfo: newContactInfo });
-            onClose(); //TODO: not sure
+            onClose();
           }}
         >
           Save
