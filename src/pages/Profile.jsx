@@ -48,6 +48,8 @@ import {
 // components
 import BasicInfoEdit from "../components/Profile/BasicInfoEdit";
 import ContactEdit from "../components/Profile/ContactEdit";
+
+import ImportantDates from "../components/Profile/ImportantDates";
 import ContactInfo from "../components/Profile/ContactInfo";
 import AdditionalInfo from "../components/Profile/AdditionalInfo";
 
@@ -224,71 +226,10 @@ const Profile = () => {
         }}
       >
         <CardContent>
-          {/* Important Dates */}
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Typography
-              variant="subtitle1"
-              fontWeight="bold"
-              gutterBottom
-              color="primary"
-            >
-              Important Dates
-            </Typography>
-            {/*TODO:uncomment and add edit modal: <EditButton onClick={() => setOpenDates(true)} /> */}
-          </Box>
-          <List dense disablePadding>
-            <ListItem disablePadding sx={{ mb: 1 }}>
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <CalendarToday fontSize="small" color="action" />
-              </ListItemIcon>
-              {person.birthday?.date ? (
-                <ListItemText
-                  primary="Birthday"
-                  secondary={
-                    <>
-                      {new Date(person.birthday.date).toLocaleDateString()}
-                      {/* TODO: replace Reminder label to reminded? */}
-                      {person.birthday.remind && (
-                        <Chip
-                          size="small"
-                          label="Reminder"
-                          color="success"
-                          sx={{ ml: 1, height: 20 }}
-                        />
-                      )}
-                    </>
-                  }
-                />
-              ) : (
-                <ListItemText primary={<EmptyState text="Add birthday" />} />
-              )}
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <Favorite fontSize="small" color="action" />
-              </ListItemIcon>
-              {person.anniversary?.date ? (
-                <ListItemText
-                  primary="Anniversary"
-                  secondary={
-                    <>
-                      {new Date(person.anniversary.date).toLocaleDateString()}
-                      {person.anniversary.remind && (
-                        <Chip
-                          size="small"
-                          label="Reminder"
-                          color="success"
-                          sx={{ ml: 1, height: 20 }}
-                        />
-                      )}
-                    </>
-                  }
-                />
-              ) : (
-                <ListItemText primary={<EmptyState text="Add anniversary" />} />
-              )}
-            </ListItem>
-          </List>
+          <ImportantDates
+            birthday={person.birthday}
+            anniversary={person.anniversary}
+          />
 
           <Divider sx={{ my: 2 }} />
 
