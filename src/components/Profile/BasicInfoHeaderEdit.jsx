@@ -9,7 +9,7 @@ import {
   Stack,
 } from "@mui/material";
 
-const BasicInfoEdit = ({ open, onClose, person }) => (
+const BasicInfoHeaderEdit = ({ open, onClose, person }) => (
   <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
     <DialogTitle>Edit Basic Information</DialogTitle>
     <DialogContent>
@@ -41,4 +41,4 @@ const BasicInfoEdit = ({ open, onClose, person }) => (
   </Dialog>
 );
 
-export default BasicInfoEdit;
+export default BasicInfoHeaderEdit;

@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import {
-  Avatar,
   Box,
   Card,
   CardContent,
@@ -14,46 +13,20 @@ import {
   ListItemText,
   Paper,
   Divider,
-  IconButton,
-  Modal,
-  TextField,
-  Button,
-  Stack,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  FormControlLabel,
-  Switch,
-  InputAdornment,
 } from "@mui/material";
-import {
-  CalendarToday,
-  Email,
-  Phone,
-  Work,
-  LocationOn,
-  Favorite,
-  Schedule,
-  Notes,
-  Add,
-  Instagram,
-  LinkedIn,
-  Edit,
-  Delete,
-} from "@mui/icons-material";
+import { Schedule } from "@mui/icons-material";
 // import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 // import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
 // components
-import BasicInfoEdit from "../components/Profile/BasicInfoEdit";
+import BasicInfoHeaderEdit from "../components/Profile/BasicInfoHeaderEdit";
 import ContactEdit from "../components/Profile/ContactEdit";
 
+import BasicInfoHeader from "../components/Profile/BasicInfoHeader";
 import ImportantDates from "../components/Profile/ImportantDates";
 import ContactInfo from "../components/Profile/ContactInfo";
 import AdditionalInfo from "../components/Profile/AdditionalInfo";
 
-import EditButton from "../components/Profile/EditButton";
 import EmptyState from "../components/Profile/EmptyState";
 
 const Profile = () => {
@@ -63,7 +36,7 @@ const Profile = () => {
     id: profileId,
     firstName: "Kathryn",
     lastName: "Murphy",
-    avatar: "https://example.com/avatar.jpg",
+    avatar: "KM",
     address: "2100 Campus Drive, Evanston, IL",
     contactInfo: {
       email: "kathryn.murphy@northwestern.edu",
@@ -73,7 +46,7 @@ const Profile = () => {
         LinkedIn: "linkedin.com/in/kathrynm",
       },
     },
-    relationshipTags: ["Friend", "Roommate"],
+    relationshipTags: ["Friend", "Roommate", "Classmate"],
     birthday: {
       date: new Date("2001-05-15"),
       remind: true,
@@ -137,12 +110,6 @@ const Profile = () => {
     // },
   ];
 
-  const getInitials = () => {
-    return `${person.firstName[0]}${
-      person.lastName ? person.lastName[0] : ""
-    }`.toUpperCase();
-  };
-
   const getEventTypeColor = (type) => {
     switch (type) {
       case "birthday":
@@ -175,48 +142,13 @@ const Profile = () => {
         minHeight: "100vh",
       }}
     >
-      {/* Header with Edit Button */}
-      <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 2 }}>
-        <Avatar
-          src={person.avatar}
-          alt={person.firstName}
-          sx={{ width: 80, height: 80, bgcolor: "primary.main" }}
-        >
-          {getInitials()}
-        </Avatar>
-        <Box sx={{ flex: 1 }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Typography variant="h5" component="h1" gutterBottom>
-              {person.firstName} {person.lastName}
-            </Typography>
-            {/* relationship tags */}
-            <EditButton onClick={() => setOpenBasicInfo(true)} />
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 1,
-              flexWrap: "wrap",
-              alignItems: "center",
-            }}
-          >
-            {person.relationshipTags?.length > 0 ? (
-              person.relationshipTags.map((tag) => (
-                <Chip
-                  key={tag}
-                  label={tag}
-                  color="primary"
-                  size="small"
-                  sx={{ "&.MuiChip-root": { fontWeight: 500 } }}
-                />
-              ))
-            ) : (
-              <EmptyState text="Add tags" />
-            )}
-          </Box>
-        </Box>
-      </Box>
-
+      <BasicInfoHeader
+        firstName={person.firstName}
+        lastName={person.lastName}
+        avatar={person.avatar}
+        relationshipTags={person.relationshipTags}
+        OnEdit={() => setOpenBasicInfo(true)}
+      />
       {/* Main Info Card */}
       <Card
         sx={{
@@ -230,21 +162,16 @@ const Profile = () => {
             birthday={person.birthday}
             anniversary={person.anniversary}
           />
-
           <Divider sx={{ my: 2 }} />
-
           <ContactInfo
             contactInfo={person.contactInfo}
             address={person.address}
             OnEdit={() => setOpenContact(true)}
           />
-
           <Divider sx={{ my: 2 }} />
-
           <AdditionalInfo occupation={person.occupation} notes={person.notes} />
         </CardContent>
       </Card>
-
       {/* Events Card */}
       <Card
         sx={{
@@ -323,12 +250,11 @@ const Profile = () => {
         </CardContent>
       </Card>
       {/* Edit Modals */}
-      <BasicInfoEdit
+      <BasicInfoHeaderEdit
         open={openBasicInfo}
         onClose={() => setOpenBasicInfo(false)}
         person={person}
       />
-
       <ContactEdit
         open={openContact}
         onClose={() => setOpenContact(false)}
