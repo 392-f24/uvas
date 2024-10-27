@@ -32,21 +32,33 @@ const ImportantDates = ({ birthday, anniversary }) => (
         </ListItemIcon>
         {birthday?.date ? (
           <ListItemText
-            primary="Birthday"
-            secondary={
-              <>
-                {new Date(birthday.date).toLocaleDateString()}
-                {/* TODO: replace Reminder label to reminded? */}
-                {birthday.remind && (
+            primary={
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Typography>Birthday</Typography>
+                {birthday.remind ? (
                   <Chip
                     size="small"
-                    label="Reminder"
+                    label="Reminder On"
                     color="success"
                     sx={{ ml: 1, height: 20 }}
                   />
+                ) : (
+                  <Chip
+                    size="small"
+                    label="Reminder Off"
+                    color="failure"
+                    sx={{ ml: 1, height: 20 }}
+                  />
                 )}
-              </>
+              </Box>
             }
+            secondary={new Date(birthday.date).toLocaleDateString()}
           />
         ) : (
           <ListItemText primary={<EmptyState text="Add birthday" />} />
