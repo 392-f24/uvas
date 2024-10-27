@@ -67,12 +67,32 @@ async function updateProfileData(userId, profileData) {
 export const fetchPeople = async (userId) => {
     try {
         const userSnap = await getDoc(getUserDoc(userId));
-        return userSnap.exists() ? userSnap.data().Relationships : [];
+        
+        if (!userSnap.exists()) return [];
+
+        const relationships = userSnap.data().Relationships;
+        
+        // Transform relationships data to fit frontend expectations
+        const people = relationships.map(personObj => {
+            const personId = Object.keys(personObj)[0];
+            const personData = personObj[personId];
+            return {
+                id: personId,
+                name: `${personData.firstName} ${personData.lastName}`,
+                occupation: personData.occupation,
+                tags: personData.relationshipTag,
+                avatar: personData.avatar || null, // Optional: add avatar if needed
+            };
+        });
+
+        return people;
+
     } catch (error) {
         console.error("Error fetching people: ", error);
         return [];
     }
 };
+
 
 // Function to fetch a specific person's profile
 export const fetchPersonProfile = async (userId, personId) => {
