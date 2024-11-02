@@ -13,6 +13,7 @@ import ContactInfo from "../components/Profile/ContactInfo";
 import AdditionalInfo from "../components/Profile/AdditionalInfo";
 import EventsCard from "../components/Profile/EventsCard";
 import { fetchPersonProfile, fetchPersonEvents } from "../utilities/dbFunctions";
+import {sampleFunction} from "../utilities/cloudFunctions";
 
 const Profile = () => {
   const { profileId } = useParams();
@@ -34,6 +35,10 @@ const Profile = () => {
     
     fetchPersonEvents("User1", profileId).then((res) => {
       setEvents([...res]);
+    }).catch((err) => console.log(err));
+
+    sampleFunction().then((res) => {
+      console.log(res);
     }).catch((err) => console.log(err));
   }, [])
 
