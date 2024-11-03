@@ -18,7 +18,7 @@ import { useTheme } from "@mui/material/styles";
 import { logOut } from "../utilities/auth";
 import { getAuth } from "firebase/auth";
 
-const pages = ["Home", "Timeline"];
+const pages = ["Home", "Birthdays"];
 
 const Logo = ({ small, onClick }) => (
   <Box
@@ -105,8 +105,8 @@ function ResponsiveAppBar({ setUser }) {
       case "Home":
         navigate("/");
         break;
-      case "Timeline":
-        navigate("/timeline");
+      case "Birthdays":
+        navigate("/birthdays");
         break;
       default:
         break;

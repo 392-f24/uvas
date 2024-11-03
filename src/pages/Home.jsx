@@ -10,16 +10,13 @@ import {
 } from "@mui/material";
 import AddPersonForm from "../components/AddPersonForm";
 import ProfileCard from "../components/ProfileCard";
-import ReminderCard from "../components/ReminderCard";
 import { fetchPeople } from "../utilities/dbFunctions";
-import { fetchReminders } from "../utilities/reminderFunction";
 import { useNavigate, Link } from "react-router-dom";
 
 const Home = ({ userId }) => {
   const theme = useTheme();
   const [displayForm, setDisplayForm] = useState(false);
   const [people, setPeople] = useState([]);
-  const [reminders, setReminders] = useState([]);
 
   const navigate = useNavigate();
   const handleNavigate = (personId) => {
@@ -39,12 +36,6 @@ const Home = ({ userId }) => {
       fetchPeople(userId)
         .then((res) => {
           setPeople(res);
-        })
-        .catch((err) => console.log(err));
-
-      fetchReminders(userId)
-        .then((res) => {
-          setReminders(res);
         })
         .catch((err) => console.log(err));
     }
