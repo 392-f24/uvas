@@ -93,15 +93,10 @@ export const fetchPeople = async (userId) => {
 
         const relationships = userSnap.data().Relationships;
         
-        const people = relationships.map(personObj => {
-            const personId = Object.keys(personObj)[0];
-            const personData = personObj[personId];
+        const people = Object.entries(relationships).map(([personId, personData]) => {
             return {
                 id: personId,
-                name: `${personData.firstName} ${personData.lastName}`,
-                occupation: personData.occupation,
-                tags: personData.relationshipTags,
-                avatar: personData.avatar || null, // Optional: add avatar
+                ...personData
             };
         });
 
@@ -132,9 +127,9 @@ export const fetchPersonProfile = async (userId, personId) => {
     try {
         const userSnap = await getDoc(getUserDoc(userId));
         if (userSnap.exists()) {
-            const people = userSnap.data().Relationships;
-            const person = people.find(p => Object.keys(p)[0] === personId);
-            return person ? person[personId] : null;
+            const relationships = userSnap.data().Relationships;
+            
+            return relationships[personId];
         }
         return null;
     } catch (error) {
