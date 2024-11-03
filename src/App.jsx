@@ -71,7 +71,7 @@ function App() {
             color={theme.m}
           >
             <Box maxWidth="md" width="100%">
-              {user && <NavigationBar />}
+              {user && <NavigationBar setUser={setUser} />}
               <Box sx={{ marginTop: "20px" }}>
                 <Routes>
                   <Route path="/login" element={<Login setUser={setUser} />} />

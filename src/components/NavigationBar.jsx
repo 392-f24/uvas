@@ -75,7 +75,7 @@ const NavigationMenu = ({ anchorEl, handleCloseMenu, handleNavigate }) => (
   </Menu>
 );
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar({ setUser }) {
   const theme = useTheme();
   const navigate = useNavigate();
   const auth = getAuth();
@@ -117,6 +117,7 @@ function ResponsiveAppBar() {
   const handleLogout = async () => {
     try {
       setAnchorElUser(null);
+      setUser(null);
       await logOut();
       navigate("/login");
     } catch (error) {
