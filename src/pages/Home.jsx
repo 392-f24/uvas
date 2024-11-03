@@ -24,7 +24,6 @@ const Home = () => {
 
   const navigate = useNavigate();
   const handleNavigate = (personId) => {
-    console.log("HERE");
     navigate(`/profile/${personId}`);
   }
 
@@ -54,7 +53,7 @@ const Home = () => {
         gap: 2,
         margin: 2,
       }}>
-      <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
+      {/* <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
         Reminders
       </Typography>
       <Box
@@ -71,7 +70,7 @@ const Home = () => {
             date={reminder.date}>
           </ReminderCard>
         ))}
-      </Box>
+      </Box> */}
       <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
         People
       </Typography>
@@ -85,9 +84,10 @@ const Home = () => {
         {people.map((person, index) => (
           <Link to={`/profile/${person.id}`} style={{ textDecoration: 'none' }} key={index} >
             <ProfileCard
-              name={person.name}
+              firstName={person.firstName}
+              lastName={person.lastName}
               occupation={person.occupation}
-              tags={person.tags}
+              tags={person.relationshipTags}
               >
             </ProfileCard>
           </Link>
