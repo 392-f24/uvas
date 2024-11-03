@@ -89,7 +89,16 @@ function App() {
                     path="/profile/:profileId"
                     element={user ? <Profile /> : <Navigate to="/login" />}
                   />
-                  <Route path="/birthdays" element={user ? <Birthdays /> : <Navigate to="/login" />} />
+                  <Route
+                    path="/birthdays"
+                    element={
+                      user ? (
+                        <Birthdays userId={user.uid} />
+                      ) : (
+                        <Navigate to="/login" />
+                      )
+                    }
+                  />
                 </Routes>
               </Box>
             </Box>
