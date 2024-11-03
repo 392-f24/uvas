@@ -1,4 +1,5 @@
 import json
+import re
 from openai import OpenAI
 from firebase_functions import https_fn, options
 from firebase_admin import initialize_app, firestore
@@ -66,7 +67,11 @@ def generate_suggestion_list(profile_text, task_text):
         try:
             res = generate_suggestion(profile_text, task_text)
             res = parse_suggestion(res)
-            return res
+            if type(res) == list:
+                return res
+            else:
+                print(f"Invalid response: {res}")
+                retry_count += 1
         except Exception as e:
             print(e)
             retry_count += 1
@@ -85,5 +90,16 @@ def generate_suggestion(profile_text, task_text):
 
 
 def parse_suggestion(res):
-    # TODO add possible parsing patterns
-    return res
+    res = res.strip()
+    
+    # First pattern: numbered list
+    if re.match(r'^\d+\.\s', res):
+        return [item.split('. ', 1)[1].strip() for item in res.splitlines()]
+    
+    # Second pattern: square brackets list
+    elif res.startswith('[') and res.endswith(']'):
+        return [item.strip() for item in res[1:-1].split(',')]
+    
+    # Third pattern: comma-separated list
+    else:
+        return [item.strip() for item in res.split(',')]
