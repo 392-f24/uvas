@@ -4,10 +4,8 @@ import {
     Grid2,
     Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
 
-function ReminderCard({ title, date }) {
+function BirthdayCard({ title, date }) {
     return (
         <Card sx={{
             px: 2,
@@ -34,4 +32,4 @@ function ReminderCard({ title, date }) {
 
 
 
-export default ReminderCard;
+export default BirthdayCard;

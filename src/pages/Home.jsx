@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import AddPersonForm from "../components/AddPersonForm";
 import ProfileCard from "../components/ProfileCard";
-import ReminderCard from "../components/ReminderCard";
+import ReminderCard from "../components/BirthdayCard";
 import { fetchPeople } from "../utilities/dbFunctions";
 import { fetchReminders } from "../utilities/reminderFunction";
 import { useNavigate, Link } from "react-router-dom";
