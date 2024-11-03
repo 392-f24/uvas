@@ -31,9 +31,9 @@ const Profile = () => {
     fetchPersonProfile("User1", profileId).then((res) => {
       setPerson({...res});
     }).catch((err) => console.log(err));
-    // suggestGifts({user_id:"User1", profile_id: profileId}).then((res) => {
-    //   console.log(res);
-    // }).catch((err) => console.log(err));
+    suggestGifts({user_id:"User1", profile_id: profileId}).then((res) => {
+      console.log(res);
+    }).catch((err) => console.log(err));
   }, [])
 
 

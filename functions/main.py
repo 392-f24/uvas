@@ -8,15 +8,22 @@ db = firestore.client()
 client = OpenAI()
 # api_key=OPENAI_API_KEY
 
-
 @https_fn.on_request(
     cors=options.CorsOptions(cors_origins="*", cors_methods=["get", "post"])
 )
 def suggest_gifts(req):
     profile_text = get_profile_text(req)
     task_text = "Suggest 5 birthday gifts. Only return a list of gift names."
+    print(profile_text)
+    deafault_gift_list = ["gift1", "gift2", "gift3", "gift4", "gift5"]
+    try:
+        gift_list = generate_suggestion_list(profile_text, task_text)
+    except Exception as e:
+        print(e)
+        gift_list = None
+    gift_list = gift_list if gift_list else deafault_gift_list
     # res = generate_suggestion_list(profile_text, task_text)
-    return https_fn.Response(json.dumps({"data": profile_text}), 200)
+    return https_fn.Response(json.dumps({"data": gift_list}), 200)
 
 
 @https_fn.on_request(
@@ -26,20 +33,19 @@ def suggest_events(req):
     profile_text = get_profile_text(req)
     all_events = fetch_events()
     task_text = f"Suggest at most 3 events in the folling event list.\n\n{all_events}\n\nOnly return a list of event names."
-    # res = generate_suggestion_list(profile_text, task_text)
-    return https_fn.Response(json.dumps({"data": profile_text}), 200)
+    try:
+        event_list = generate_suggestion_list(profile_text, task_text)
+    except Exception as e:
+        print(e)
+        event_list = ["gift1", "gift2", "gift3"]
+    return https_fn.Response(json.dumps({"data": event_list}), 200)
 
 
 def get_profile_text(req):
     req_data = json.loads(req.data)["data"]
     user_id, profile_id = req_data["user_id"], req_data["profile_id"]
     user_data = db.collection("Users").document(user_id).get().to_dict()
-    # The current data structure for relationships is too clumpsy
-    # Ideally we should be able to access the data by profile_id directly
-    # i.e. profile_data = user_data["Relationships"][profile_id]
-    # TODO: wait for the data structure to be fixed. 
-    # It's super easy to change, replace the outer list with a dict and get rid of all the unnecessary nesting dicts
-    profile_data = user_data["Relationships"][0][profile_id] # this is a workaround that only works for person1
+    profile_data = user_data["Relationships"][profile_id]
     return profile_data_to_text(profile_data)
 
 
