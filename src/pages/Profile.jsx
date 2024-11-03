@@ -6,13 +6,14 @@ import { Box, Card, CardContent, Divider, Typography } from "@mui/material";
 // components
 import BasicInfoHeaderEdit from "../components/Profile/BasicInfoHeaderEdit";
 import ContactEdit from "../components/Profile/ContactEdit";
+import DatesEdit from "../components/Profile/DatesEdit";
 
 import BasicInfoHeader from "../components/Profile/BasicInfoHeader";
 import ImportantDates from "../components/Profile/ImportantDates";
 import ContactInfo from "../components/Profile/ContactInfo";
 import AdditionalInfo from "../components/Profile/AdditionalInfo";
 import EventsCard from "../components/Profile/EventsCard";
-import { fetchPersonProfile, fetchPersonEvents } from "../utilities/dbFunctions";
+import { fetchPersonProfile, fetchPersonEvents, updateProfileData } from "../utilities/dbFunctions";
 import {suggestGifts, suggestEvents} from "../utilities/cloudFunctions";
 
 const Profile = () => {
@@ -41,7 +42,8 @@ const Profile = () => {
   const updateProfile = async (newData) => {
     try {
       // TODO: Firebase update function here
-      // await updateProfileData(profileId, newData);
+      console.log(newData);
+      await updateProfileData("User1", profileId, newData);
       setPerson((prev) => ({ ...prev, ...newData }));
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -84,6 +86,7 @@ const Profile = () => {
           <ImportantDates
             birthday={person.birthday}
             anniversary={person.anniversary}
+            OnEdit={() => setOpenDates(true)}
           />
           <Divider sx={{ my: 2 }} />
           <ContactInfo
@@ -101,6 +104,12 @@ const Profile = () => {
         open={openBasicInfo}
         onClose={() => setOpenBasicInfo(false)}
         person={person}
+      />
+      <DatesEdit
+        open={openDates}
+        onClose={() => setOpenDates(false)}
+        person={person}
+        updateProfile={updateProfile}
       />
       <ContactEdit
         open={openContact}
