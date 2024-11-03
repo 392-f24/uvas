@@ -10,7 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 
-function ProfileCard({ name, occupation, tags }) {
+function ProfileCard({ firstName, lastName, occupation, tags }) {
     return (
         <Card sx={{
             px: 2,
@@ -27,7 +27,7 @@ function ProfileCard({ name, occupation, tags }) {
                     <Grid2 container direction="column">
                         <Grid2>
                             <Typography variant="h6" textAlign="left" color="black">
-                                {name}
+                                {firstName} {lastName}
                             </Typography>
                         </Grid2>
                         <Grid2>

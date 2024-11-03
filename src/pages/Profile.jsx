@@ -13,12 +13,12 @@ import ContactInfo from "../components/Profile/ContactInfo";
 import AdditionalInfo from "../components/Profile/AdditionalInfo";
 import EventsCard from "../components/Profile/EventsCard";
 import { fetchPersonProfile, fetchPersonEvents } from "../utilities/dbFunctions";
+import {suggestGifts, suggestEvents} from "../utilities/cloudFunctions";
 
 const Profile = () => {
   const { profileId } = useParams();
   
   const [person, setPerson] = useState();
-  const [events, setEvents] = useState();
 
   // Modal states for different sections
   const [openBasicInfo, setOpenBasicInfo] = useState(false);
@@ -31,10 +31,9 @@ const Profile = () => {
     fetchPersonProfile("User1", profileId).then((res) => {
       setPerson({...res});
     }).catch((err) => console.log(err));
-    
-    fetchPersonEvents("User1", profileId).then((res) => {
-      setEvents([...res]);
-    }).catch((err) => console.log(err));
+    // suggestGifts({user_id:"User1", profile_id: profileId}).then((res) => {
+    //   console.log(res);
+    // }).catch((err) => console.log(err));
   }, [])
 
 
@@ -96,8 +95,6 @@ const Profile = () => {
           <AdditionalInfo occupation={person.occupation} notes={person.notes} />
         </CardContent>
       </Card>
-
-      <EventsCard events={events} />
 
       {/* Edit Modals */}
       <BasicInfoHeaderEdit

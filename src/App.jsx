@@ -7,6 +7,8 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Timeline from "./pages/Timeline";
 import { Box } from "@mui/material";
+import { useEffect} from "react";
+import uploadDataToFirestore from "./utilities/uploadData";
 
 const theme = createTheme({
   palette: {
@@ -27,6 +29,9 @@ const theme = createTheme({
 });
 
 function App() {
+  // useEffect(() => {
+  //   uploadDataToFirestore();
+  // },[]);
   return (
     <>
       <ThemeProvider theme={theme}>
