@@ -6,7 +6,8 @@ import { Box, Card, CardContent, Divider, Typography } from "@mui/material";
 // components
 import BasicInfoHeaderEdit from "../components/Profile/BasicInfoHeaderEdit";
 import ContactEdit from "../components/Profile/ContactEdit";
-
+import LikesDislikesEdit from "../components/Profile/LikesDislikesEdit";
+import LikesDislikes from "../components/Profile/LikesDislikes";
 import BasicInfoHeader from "../components/Profile/BasicInfoHeader";
 import ImportantDates from "../components/Profile/ImportantDates";
 import ContactInfo from "../components/Profile/ContactInfo";
@@ -21,6 +22,7 @@ const Profile = () => {
   const [events, setEvents] = useState();
 
   // Modal states for different sections
+  const [openLikesDislikes, setOpenLikesDislikes]  = useState(false);
   const [openBasicInfo, setOpenBasicInfo] = useState(false);
   const [openDates, setOpenDates] = useState(false);
   const [openContact, setOpenContact] = useState(false);
@@ -87,13 +89,17 @@ const Profile = () => {
             anniversary={person.anniversary}
           />
           <Divider sx={{ my: 2 }} />
+          <LikesDislikes likes={person.likes} dislikes={person.dislikes} 
+          onEdit={() => setOpenLikesDislikes(true)} />
+          <Divider sx={{ my: 2 }} />
+          
+          <AdditionalInfo occupation={person.occupation} notes={person.notes} />
+          <Divider sx={{ my: 2 }} />
           <ContactInfo
             contactInfo={person.contactInfo}
             address={person.address}
             OnEdit={() => setOpenContact(true)}
           />
-          <Divider sx={{ my: 2 }} />
-          <AdditionalInfo occupation={person.occupation} notes={person.notes} />
         </CardContent>
       </Card>
 
@@ -108,6 +114,12 @@ const Profile = () => {
       <ContactEdit
         open={openContact}
         onClose={() => setOpenContact(false)}
+        person={person}
+        updateProfile={updateProfile}
+      />
+      <LikesDislikesEdit 
+        open={openLikesDislikes} 
+        onClose={() => setOpenLikesDislikes(false)}
         person={person}
         updateProfile={updateProfile}
       />
