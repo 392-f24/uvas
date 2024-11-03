@@ -1,14 +1,17 @@
 import "./App.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { purple, grey } from "@mui/material/colors";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { grey } from "@mui/material/colors";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import NavigationBar from "./components/NavigationBar";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Timeline from "./pages/Timeline";
+import Login from "./pages/Login";
 import { Box } from "@mui/material";
-import { useEffect} from "react";
+import { useState, useEffect } from "react";
 import uploadDataToFirestore from "./utilities/uploadData";
+import { auth } from "./utilities/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 const theme = createTheme({
   palette: {
@@ -29,9 +32,17 @@ const theme = createTheme({
 });
 
 function App() {
-  // useEffect(() => {
-  //   uploadDataToFirestore();
-  // },[]);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUser(user);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -46,9 +57,19 @@ function App() {
               <NavigationBar />
               <Box sx={{ marginTop: "20px" }}>
                 <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/profile/:profileId" element={<Profile />} />
-                  <Route path="/timeline" element={<Timeline />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route
+                    path="/"
+                    element={user ? <Home /> : <Navigate to="/login" />}
+                  />
+                  <Route
+                    path="/profile/:profileId"
+                    element={user ? <Profile /> : <Navigate to="/login" />}
+                  />
+                  <Route
+                    path="/timeline"
+                    element={user ? <Timeline /> : <Navigate to="/login" />}
+                  />
                 </Routes>
               </Box>
             </Box>

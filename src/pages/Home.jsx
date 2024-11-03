@@ -25,7 +25,7 @@ const Home = () => {
   const navigate = useNavigate();
   const handleNavigate = (personId) => {
     navigate(`/profile/${personId}`);
-  }
+  };
 
   const openForm = () => {
     setDisplayForm(true);
@@ -36,14 +36,18 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchPeople("User1").then((res) => {
-      setPeople(res);
-    }).catch((err) => (console.log(err)))
+    fetchPeople("User1")
+      .then((res) => {
+        setPeople(res);
+      })
+      .catch((err) => console.log(err));
 
-    fetchReminders("User1").then((res) => {
-      setReminders(res);
-    }).catch((err) => (console.log(err)))
-  }, [])
+    fetchReminders("User1")
+      .then((res) => {
+        setReminders(res);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <Box
@@ -52,25 +56,8 @@ const Home = () => {
         flexDirection: "column",
         gap: 2,
         margin: 2,
-      }}>
-      {/* <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
-        Reminders
-      </Typography>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        {reminders.map((reminder, index) => (
-          <ReminderCard
-            key={index} // CHANGE THIS TO UID WHEN DB IS READY
-            title={reminder.title}
-            date={reminder.date}>
-          </ReminderCard>
-        ))}
-      </Box> */}
+      }}
+    >
       <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
         People
       </Typography>
@@ -82,14 +69,17 @@ const Home = () => {
         }}
       >
         {people.map((person, index) => (
-          <Link to={`/profile/${person.id}`} style={{ textDecoration: 'none' }} key={index} >
+          <Link
+            to={`/profile/${person.id}`}
+            style={{ textDecoration: "none" }}
+            key={index}
+          >
             <ProfileCard
               firstName={person.firstName}
               lastName={person.lastName}
               occupation={person.occupation}
               tags={person.relationshipTags}
-              >
-            </ProfileCard>
+            ></ProfileCard>
           </Link>
         ))}
       </Box>
@@ -114,7 +104,7 @@ const Home = () => {
           <AddPersonForm />
         </DialogContent>
       </Dialog>
-    </Box >
+    </Box>
   );
 };
 
