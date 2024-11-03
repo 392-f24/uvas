@@ -30,34 +30,35 @@ const ImportantDates = ({ birthday, anniversary }) => (
         <ListItemIcon sx={{ minWidth: 40 }}>
           <CalendarToday fontSize="small" color="action" />
         </ListItemIcon>
-        {birthday?.date ? (
+        {/* DOUBLE CHECK */}
+        {birthday.date ? (
           <ListItemText
-            primary={
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Typography>Birthday</Typography>
-                {birthday.remind ? (
-                  <Chip
-                    size="small"
-                    label="Reminder On"
-                    color="success"
-                    sx={{ ml: 1, height: 20 }}
-                  />
-                ) : (
-                  <Chip
-                    size="small"
-                    label="Reminder Off"
-                    color="failure"
-                    sx={{ ml: 1, height: 20 }}
-                  />
-                )}
-              </Box>
-            }
+            // primary={
+            //   <Box
+            //     sx={{
+            //       display: "flex",
+            //       justifyContent: "space-between",
+            //       alignItems: "center",
+            //     }}
+            //   >
+            //     <Typography>Birthday</Typography>
+            //     {birthday.remind ? (
+            //       <Chip
+            //         size="small"
+            //         label="Reminder Off"
+            //         color="success"
+            //         sx={{ ml: 1, height: 20 }}
+            //       />
+            //     ) : (
+            //       <Chip
+            //         size="small"
+            //         label="Reminder Off"
+            //         color="failure"
+            //         sx={{ ml: 1, height: 20 }}
+            //       />
+            //     )}
+            //   </Box>
+            // }
             secondary={new Date(birthday.date).toLocaleDateString()}
           />
         ) : (
@@ -68,7 +69,7 @@ const ImportantDates = ({ birthday, anniversary }) => (
         <ListItemIcon sx={{ minWidth: 40 }}>
           <Favorite fontSize="small" color="action" />
         </ListItemIcon>
-        {anniversary?.date ? (
+        {anniversary.date ? (
           <ListItemText
             primary="Anniversary"
             secondary={
