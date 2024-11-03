@@ -3,7 +3,6 @@ import { useTheme } from "@mui/material/styles";
 import {
   Typography,
   Box,
-  Divider,
   Button,
   Dialog,
   DialogTitle,
@@ -11,21 +10,18 @@ import {
 } from "@mui/material";
 import AddPersonForm from "../components/AddPersonForm";
 import ProfileCard from "../components/ProfileCard";
-import ReminderCard from "../components/BirthdayCard";
 import { fetchPeople } from "../utilities/dbFunctions";
-import { fetchBirthdays } from "../utilities/birthdayFunction";
 import { useNavigate, Link } from "react-router-dom";
 
-const Home = () => {
+const Home = ({ userId }) => {
   const theme = useTheme();
   const [displayForm, setDisplayForm] = useState(false);
   const [people, setPeople] = useState([]);
-  const [reminders, setReminders] = useState([]);
 
   const navigate = useNavigate();
   const handleNavigate = (personId) => {
     navigate(`/profile/${personId}`);
-  }
+  };
 
   const openForm = () => {
     setDisplayForm(true);
@@ -36,14 +32,14 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchPeople("User1").then((res) => {
-      setPeople(res);
-    }).catch((err) => (console.log(err)))
-
-    fetchBirthdays("User1").then((res) => {
-      setReminders(res);
-    }).catch((err) => (console.log(err)))
-  }, [])
+    if (userId) {
+      fetchPeople(userId)
+        .then((res) => {
+          setPeople(res);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [userId]);
 
   return (
     <Box
@@ -52,25 +48,8 @@ const Home = () => {
         flexDirection: "column",
         gap: 2,
         margin: 2,
-      }}>
-      {/* <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
-        Reminders
-      </Typography>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        {reminders.map((reminder, index) => (
-          <ReminderCard
-            key={index} // CHANGE THIS TO UID WHEN DB IS READY
-            title={reminder.title}
-            date={reminder.date}>
-          </ReminderCard>
-        ))}
-      </Box> */}
+      }}
+    >
       <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
         People
       </Typography>
@@ -81,17 +60,27 @@ const Home = () => {
           gap: 2,
         }}
       >
-        {people.map((person, index) => (
-          <Link to={`/profile/${person.id}`} style={{ textDecoration: 'none' }} key={index} >
-            <ProfileCard
-              firstName={person.firstName}
-              lastName={person.lastName}
-              occupation={person.occupation}
-              tags={person.relationshipTags}
-              >
-            </ProfileCard>
-          </Link>
-        ))}
+        {people.length > 0 ? (
+          people.map((person, index) => (
+            <Link
+              to={`/profile/${person.id}`}
+              style={{ textDecoration: "none" }}
+              key={index}
+            >
+              <ProfileCard
+                firstName={person.firstName}
+                lastName={person.lastName}
+                occupation={person.occupation}
+                tags={person.relationshipTags}
+              ></ProfileCard>
+            </Link>
+          ))
+        ) : (
+          <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+            You don't have any people added yet. Click{" "}
+            <strong>Add Person</strong> to get started!
+          </Typography>
+        )}
       </Box>
 
       <Button
@@ -114,7 +103,7 @@ const Home = () => {
           <AddPersonForm />
         </DialogContent>
       </Dialog>
-    </Box >
+    </Box>
   );
 };
 

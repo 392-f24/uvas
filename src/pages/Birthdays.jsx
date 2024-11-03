@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
-import {
-  Typography,
-  Box,
-} from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import { fetchBirthdays } from "../utilities/birthdayFunction";
 import BirthdayCard from "../components/BirthdayCard";
 import { Link } from "react-router-dom";
@@ -26,23 +23,24 @@ function getOrdinalNumber(age) {
 }
 
 function formatDateToMonthDay(dateString) {
-  const [month, day] = dateString.split('-').map(Number);
+  const [month, day] = dateString.split("-").map(Number);
   const date = new Date(0, month - 1, day);
 
-  const options = { month: 'long', day: 'numeric' };
-  return date.toLocaleDateString('en-US', options);
+  const options = { month: "long", day: "numeric" };
+  return date.toLocaleDateString("en-US", options);
 }
 
-
-const Birthdays = () => {
+const Birthdays = ({ userId }) => {
   const theme = useTheme();
   const [birthdays, setBirthdays] = useState([]);
 
   useEffect(() => {
-    fetchBirthdays("User1").then((res) => {
-      setBirthdays(res);
-    }).catch((err) => (console.log(err)))
-  }, [])
+    fetchBirthdays(userId)
+      .then((res) => {
+        setBirthdays(res);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <Box
@@ -51,7 +49,8 @@ const Birthdays = () => {
         flexDirection: "column",
         gap: 2,
         margin: 2,
-      }}>
+      }}
+    >
       <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
         Birthdays
       </Typography>
@@ -62,17 +61,29 @@ const Birthdays = () => {
           gap: 2,
         }}
       >
-        {birthdays.map((birthday, index) => (
-          <Link to={`/profile/${birthday.personId}`} style={{ textDecoration: 'none' }} key={index} >
-            <BirthdayCard
+        {birthdays.length > 0 ? (
+          birthdays.map((birthday, index) => (
+            <Link
+              to={`/profile/${birthday.personId}`}
+              style={{ textDecoration: "none" }}
               key={index}
-              title={`${birthday.firstName}'s ${getOrdinalNumber(birthday.age)} Birthday`}
-              date={formatDateToMonthDay(birthday.date)}>
-            </BirthdayCard>
-          </Link>
-        ))}
+            >
+              <BirthdayCard
+                key={index}
+                title={`${birthday.firstName}'s ${getOrdinalNumber(
+                  birthday.age
+                )} Birthday`}
+                date={formatDateToMonthDay(birthday.date)}
+              ></BirthdayCard>
+            </Link>
+          ))
+        ) : (
+          <Typography variant="body1" textAlign="left" color="textSecondary">
+            No birthdays coming up
+          </Typography>
+        )}
       </Box>
-    </Box >
+    </Box>
   );
 };
 

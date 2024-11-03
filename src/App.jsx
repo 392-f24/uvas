@@ -1,14 +1,22 @@
 import "./App.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { purple, grey } from "@mui/material/colors";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { grey } from "@mui/material/colors";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import NavigationBar from "./components/NavigationBar";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
+import Login from "./pages/Login";
 import Birthdays from "./pages/Birthdays";
 import { Box } from "@mui/material";
-import { useEffect} from "react";
+import { useState, useEffect } from "react";
 import uploadDataToFirestore from "./utilities/uploadData";
+import {
+  getAuth,
+  onAuthStateChanged,
+  setPersistence,
+  browserSessionPersistence,
+} from "firebase/auth";
+import { set } from "date-fns";
 
 const theme = createTheme({
   palette: {
@@ -29,9 +37,29 @@ const theme = createTheme({
 });
 
 function App() {
-  // useEffect(() => {
-  //   uploadDataToFirestore();
-  // },[]);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const auth = getAuth();
+
+  useEffect(() => {
+    setPersistence(auth, browserSessionPersistence)
+      .then(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currUser) => {
+          setUser(currUser);
+          setLoading(false);
+        });
+
+        return () => unsubscribe();
+      })
+      .catch((error) => {
+        console.error("Failed to set persistence: ", error.message);
+      });
+  }, [auth]);
+
+  if (loading) {
+    return <Box>Loading...</Box>;
+  }
+
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -43,12 +71,34 @@ function App() {
             color={theme.m}
           >
             <Box maxWidth="md" width="100%">
-              <NavigationBar />
+              {user && <NavigationBar setUser={setUser} />}
               <Box sx={{ marginTop: "20px" }}>
                 <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/profile/:profileId" element={<Profile />} />
-                  <Route path="/birthdays" element={<Birthdays />} />
+                  <Route path="/login" element={<Login setUser={setUser} />} />
+                  <Route
+                    path="/"
+                    element={
+                      user ? (
+                        <Home userId={user.uid} />
+                      ) : (
+                        <Navigate to="/login" />
+                      )
+                    }
+                  />
+                  <Route
+                    path="/profile/:profileId"
+                    element={user ? <Profile /> : <Navigate to="/login" />}
+                  />
+                  <Route
+                    path="/birthdays"
+                    element={
+                      user ? (
+                        <Birthdays userId={user.uid} />
+                      ) : (
+                        <Navigate to="/login" />
+                      )
+                    }
+                  />
                 </Routes>
               </Box>
             </Box>
