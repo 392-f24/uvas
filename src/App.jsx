@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NavigationBar from "./components/NavigationBar";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
-import Timeline from "./pages/Timeline";
+import Birthdays from "./pages/Birthdays";
 import { Box } from "@mui/material";
 import { useEffect} from "react";
 import uploadDataToFirestore from "./utilities/uploadData";
@@ -48,7 +48,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/profile/:profileId" element={<Profile />} />
-                  <Route path="/timeline" element={<Timeline />} />
+                  <Route path="/birthdays" element={<Birthdays />} />
                 </Routes>
               </Box>
             </Box>
