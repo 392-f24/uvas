@@ -2,39 +2,47 @@ import { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import {
   Typography,
-  Box
+  Box,
 } from "@mui/material";
-import { fetchReminders } from "../utilities/reminderFunction";
+import { fetchBirthdays } from "../utilities/birthdayFunction";
 import BirthdayCard from "../components/BirthdayCard";
+import { Link } from "react-router-dom";
+
+function getOrdinalNumber(age) {
+  const remainder = age % 100;
+  if (remainder >= 11 && remainder <= 13) {
+    return `${age}th`;
+  }
+  switch (age % 10) {
+    case 1:
+      return `${age}st`;
+    case 2:
+      return `${age}nd`;
+    case 3:
+      return `${age}rd`;
+    default:
+      return `${age}th`;
+  }
+}
+
+function formatDateToMonthDay(dateString) {
+  const [month, day] = dateString.split('-').map(Number);
+  const date = new Date(0, month - 1, day);
+
+  const options = { month: 'long', day: 'numeric' };
+  return date.toLocaleDateString('en-US', options);
+}
+
 
 const Birthdays = () => {
   const theme = useTheme();
-  // const [birthdays, setBirthdays] = useState([]);
+  const [birthdays, setBirthdays] = useState([]);
 
-  const birthdays = [
-    {
-      title: "Charlie's Birthday",
-      date: "June 23",
-    },
-    {
-      title: "John's Birthday",
-      date: "June 24",
-    },
-    {
-      title: "Sarah's Birthday",
-      date: "June 25",
-    },
-    {
-      title: "Michael's Birthday",
-      date: "June 26",
-    }
-  ];
-
-  // useEffect(() => {
-  //   fetchReminders("User1").then((res) => {
-  //     setBirthdays(res);
-  //   }).catch((err) => (console.log(err)))
-  // }, [])
+  useEffect(() => {
+    fetchBirthdays("User1").then((res) => {
+      setBirthdays(res);
+    }).catch((err) => (console.log(err)))
+  }, [])
 
   return (
     <Box
@@ -54,12 +62,14 @@ const Birthdays = () => {
           gap: 2,
         }}
       >
-        {birthdays.map((reminder, index) => (
-          <BirthdayCard
-            key={index}
-            title={reminder.title}
-            date={reminder.date}>
-          </BirthdayCard>
+        {birthdays.map((birthday, index) => (
+          <Link to={`/profile/${birthday.personId}`} style={{ textDecoration: 'none' }} key={index} >
+            <BirthdayCard
+              key={index}
+              title={`${birthday.firstName}'s ${getOrdinalNumber(birthday.age)} Birthday`}
+              date={formatDateToMonthDay(birthday.date)}>
+            </BirthdayCard>
+          </Link>
         ))}
       </Box>
     </Box >

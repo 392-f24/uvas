@@ -13,7 +13,7 @@ import AddPersonForm from "../components/AddPersonForm";
 import ProfileCard from "../components/ProfileCard";
 import ReminderCard from "../components/BirthdayCard";
 import { fetchPeople } from "../utilities/dbFunctions";
-import { fetchReminders } from "../utilities/reminderFunction";
+import { fetchBirthdays } from "../utilities/birthdayFunction";
 import { useNavigate, Link } from "react-router-dom";
 
 const Home = () => {
@@ -41,7 +41,7 @@ const Home = () => {
       setPeople(res);
     }).catch((err) => (console.log(err)))
 
-    fetchReminders("User1").then((res) => {
+    fetchBirthdays("User1").then((res) => {
       setReminders(res);
     }).catch((err) => (console.log(err)))
   }, [])
