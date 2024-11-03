@@ -10,8 +10,13 @@ import Login from "./pages/Login";
 import { Box } from "@mui/material";
 import { useState, useEffect } from "react";
 import uploadDataToFirestore from "./utilities/uploadData";
-import { auth } from "./utilities/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  setPersistence,
+  browserSessionPersistence,
+} from "firebase/auth";
+import { set } from "date-fns";
 
 const theme = createTheme({
   palette: {
@@ -34,14 +39,26 @@ const theme = createTheme({
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const auth = getAuth();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user);
-    });
+    setPersistence(auth, browserSessionPersistence)
+      .then(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currUser) => {
+          setUser(currUser);
+          setLoading(false);
+        });
 
-    return () => unsubscribe();
-  }, []);
+        return () => unsubscribe();
+      })
+      .catch((error) => {
+        console.error("Failed to set persistence: ", error.message);
+      });
+  }, [auth]);
+
+  if (loading) {
+    return <Box>Loading...</Box>;
+  }
 
   return (
     <>
@@ -54,7 +71,7 @@ function App() {
             color={theme.m}
           >
             <Box maxWidth="md" width="100%">
-              <NavigationBar />
+              {user && <NavigationBar />}
               <Box sx={{ marginTop: "20px" }}>
                 <Routes>
                   <Route path="/login" element={<Login />} />

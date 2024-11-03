@@ -9,6 +9,7 @@ export const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
+    await saveUserData(user);
     return user;
   } catch (error) {
     console.error("Error with sign in: ", error.message);
@@ -18,14 +19,14 @@ export const signInWithGoogle = async () => {
 
 const saveUserData = async (user) => {
   try {
-    const userRef = doc(db, "users", user.uid);
+    const userRef = doc(db, "Users", user.uid);
     const userDoc = await getDoc(userRef);
 
     if (!userDoc.exists()) {
       await setDoc(userRef, {
-        relationships: {},
-        tags: ["Friend", "Family", "Coworker"],
-        createdAt: new Date(),
+        Relationships: {},
+        Tags: ["Friend", "Family", "Coworker"],
+        CreatedAt: new Date(),
       });
       console.log("New user data saved successfully.");
     } else {

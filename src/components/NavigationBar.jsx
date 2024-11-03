@@ -15,6 +15,8 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
+import { logOut } from "../utilities/auth";
+import { getAuth } from "firebase/auth";
 
 const pages = ["Home", "Timeline"];
 
@@ -76,6 +78,8 @@ const NavigationMenu = ({ anchorEl, handleCloseMenu, handleNavigate }) => (
 function ResponsiveAppBar() {
   const theme = useTheme();
   const navigate = useNavigate();
+  const auth = getAuth();
+  const user = auth.currentUser;
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -110,9 +114,14 @@ function ResponsiveAppBar() {
     setAnchorElNav(null);
   };
 
-  const handleLogout = () => {
-    setAnchorElUser(null);
-    console.log("Logout");
+  const handleLogout = async () => {
+    try {
+      setAnchorElUser(null);
+      await logOut();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error with sign out: ", error.message);
+    }
   };
 
   return (
@@ -167,7 +176,10 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
+                <Avatar
+                  alt="User Avatar"
+                  src={user?.photoURL || "/static/images/avatar/2.jpg"}
+                />
               </IconButton>
             </Tooltip>
             <Menu
