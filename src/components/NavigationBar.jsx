@@ -16,7 +16,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 
-const pages = ["Home", "Timeline"];
+const pages = ["Home", "Birthdays"];
 
 const Logo = ({ small, onClick }) => (
   <Box
@@ -101,8 +101,8 @@ function ResponsiveAppBar() {
       case "Home":
         navigate("/");
         break;
-      case "Timeline":
-        navigate("/timeline");
+      case "Birthdays":
+        navigate("/birthdays");
         break;
       default:
         break;

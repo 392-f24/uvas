@@ -8,11 +8,11 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-// import EditButton from "./EditButton";
+import EditButton from "./EditButton";
 import { CalendarToday, Favorite } from "@mui/icons-material";
 import EmptyState from "./EmptyState";
 
-const ImportantDates = ({ birthday, anniversary }) => (
+const ImportantDates = ({ birthday, anniversary, OnEdit }) => (
   <Box>
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Typography
@@ -23,7 +23,7 @@ const ImportantDates = ({ birthday, anniversary }) => (
       >
         Important Dates
       </Typography>
-      {/*TODO:uncomment and add edit modal: <EditButton onClick={() => setOpenDates(true)} /> */}
+      <EditButton onClick={OnEdit} />
     </Box>
     <List dense disablePadding>
       <ListItem disablePadding sx={{ mb: 1 }}>

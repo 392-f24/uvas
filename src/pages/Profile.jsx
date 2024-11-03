@@ -8,18 +8,19 @@ import BasicInfoHeaderEdit from "../components/Profile/BasicInfoHeaderEdit";
 import ContactEdit from "../components/Profile/ContactEdit";
 import LikesDislikesEdit from "../components/Profile/LikesDislikesEdit";
 import LikesDislikes from "../components/Profile/LikesDislikes";
+import DatesEdit from "../components/Profile/DatesEdit";
 import BasicInfoHeader from "../components/Profile/BasicInfoHeader";
 import ImportantDates from "../components/Profile/ImportantDates";
 import ContactInfo from "../components/Profile/ContactInfo";
 import AdditionalInfo from "../components/Profile/AdditionalInfo";
 import EventsCard from "../components/Profile/EventsCard";
-import { fetchPersonProfile, fetchPersonEvents } from "../utilities/dbFunctions";
+import { fetchPersonProfile, fetchPersonEvents, updateProfileData } from "../utilities/dbFunctions";
+import {suggestGifts, suggestEvents} from "../utilities/cloudFunctions";
 
 const Profile = () => {
   const { profileId } = useParams();
   
   const [person, setPerson] = useState();
-  const [events, setEvents] = useState();
 
   // Modal states for different sections
   const [openLikesDislikes, setOpenLikesDislikes]  = useState(false);
@@ -33,10 +34,9 @@ const Profile = () => {
     fetchPersonProfile("User1", profileId).then((res) => {
       setPerson({...res});
     }).catch((err) => console.log(err));
-    
-    fetchPersonEvents("User1", profileId).then((res) => {
-      setEvents([...res]);
-    }).catch((err) => console.log(err));
+    // suggestGifts({user_id:"User1", profile_id: profileId}).then((res) => {
+    //   console.log(res);
+    // }).catch((err) => console.log(err));
   }, [])
 
 
@@ -44,7 +44,8 @@ const Profile = () => {
   const updateProfile = async (newData) => {
     try {
       // TODO: Firebase update function here
-      // await updateProfileData(profileId, newData);
+      console.log(newData);
+      await updateProfileData("User1", profileId, newData);
       setPerson((prev) => ({ ...prev, ...newData }));
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -87,6 +88,7 @@ const Profile = () => {
           <ImportantDates
             birthday={person.birthday}
             anniversary={person.anniversary}
+            OnEdit={() => setOpenDates(true)}
           />
           <Divider sx={{ my: 2 }} />
           <LikesDislikes likes={person.likes} dislikes={person.dislikes} 
@@ -103,13 +105,17 @@ const Profile = () => {
         </CardContent>
       </Card>
 
-      <EventsCard events={events} />
-
       {/* Edit Modals */}
       <BasicInfoHeaderEdit
         open={openBasicInfo}
         onClose={() => setOpenBasicInfo(false)}
         person={person}
+      />
+      <DatesEdit
+        open={openDates}
+        onClose={() => setOpenDates(false)}
+        person={person}
+        updateProfile={updateProfile}
       />
       <ContactEdit
         open={openContact}

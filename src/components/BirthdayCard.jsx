@@ -1,19 +1,20 @@
 import * as React from "react";
+import { useTheme, alpha } from "@mui/material/styles";
 import {
     Card,
     Grid2,
     Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
 
-function ReminderCard({ title, date }) {
+function BirthdayCard({ title, date }) {
+    const theme = useTheme();
+
     return (
         <Card sx={{
             px: 2,
             py: 2,
             borderRadius: 2,
-            backgroundColor: "#EAEAEA",
+            backgroundColor: alpha(theme.palette.primary.light, 0.5),
             boxShadow: "none"
         }}>
             <Grid2 container direction="column">
@@ -34,4 +35,4 @@ function ReminderCard({ title, date }) {
 
 
 
-export default ReminderCard;
+export default BirthdayCard;

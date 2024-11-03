@@ -1,5 +1,5 @@
 import { db } from './firebase'
-import { doc, setDoc, updateDoc, arrayRemove, arrayUnion, collection, addDoc, getDoc, query, where } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, arrayRemove, arrayUnion, collection, addDoc, getDoc, updateDoc, query, where } from 'firebase/firestore';
 
 // Constants for collections
 const USERS_COLLECTION = 'Users';
@@ -10,24 +10,24 @@ const getUserDoc = (userId) => doc(db, USERS_COLLECTION, userId);
 //Function to add new user to database
 export async function addNewUser(userId, userData) {
     try {
-      const userRef = getUserDoc(userId);
-  
-      // Initial structure based on data model
-      const initialData = {
-        Relationships: [],
-        Tags: ["Friend", "Family", "Coworker"],
-        Events: [],
-        ...userData // Merges provided user data
-      };
-  
-      // Set the document in Firestore
-      await setDoc(userRef, initialData);
-      console.log("User added successfully");
+        const userRef = getUserDoc(userId);
+
+        // Initial structure based on data model
+        const initialData = {
+            Relationships: [],
+            Tags: ["Friend", "Family", "Coworker"],
+            Events: [],
+            ...userData // Merges provided user data
+        };
+
+        // Set the document in Firestore
+        await setDoc(userRef, initialData);
+        console.log("User added successfully");
     } catch (error) {
-      console.error("Error adding user: ", error);
-      throw error;
+        console.error("Error adding user: ", error);
+        throw error;
     }
-  }
+}
 
 // Function to add a new person to a user's relationships
 export const addPerson = async (userId, person) => {
@@ -42,25 +42,49 @@ export const addPerson = async (userId, person) => {
     }
 };
 
-// Function to update profile data for a specific user
-async function updateProfileData(userId, profileData) {
+// Function to update profile data for a specific user and profile section
+export async function updateProfileData(userId, profileId, profileData) {
     try {
-        const userDocRef = getUserDoc(userId);
+      // Get the reference to the user's document
+      const userDocRef = getUserDoc(userId);
+  
+      // Fetch the current user document to get the existing profile
+      const userSnap = await getDoc(userDocRef);
+      if (!userSnap.exists()) throw new Error("User document does not exist");
+  
+      const userData = userSnap.data();
+      const existingProfile = userData.Relationships?.[profileId];
+  
+      if (!existingProfile) throw new Error("Profile not found");
+  
+      // Merge the existing and updated profile sections, overwriting new ones
+      const updatedProfile = {
+        ...existingProfile,
+        ...profileData,
+      };
+  
+      // Construct the update object
+      const updateData = {
+        [`Relationships.${profileId}`]: updatedProfile,
+      };
 
-        await updateDoc(userDocRef, profileData);
-
-        return {
-            success: true,
-            message: 'Profile data updated successfully',
-            updatedProfile: profileData
-        };
+      console.log(updateData);
+  
+      // Update the document with the merged profile data
+      await updateDoc(userDocRef, updateData);
+  
+      return {
+        success: true,
+        message: 'Profile data updated successfully',
+        updatedProfile: updatedProfile,
+      };
     } catch (error) {
-        console.error("Error updating profile data:", error);
-        return {
-            success: false,
-            message: 'Failed to update profile data',
-            error: error.message
-        };
+      console.error("Error updating profile data:", error);
+      return {
+        success: false,
+        message: 'Failed to update profile data',
+        error: error.message,
+      };
     }
 }
 //Function to update likes and dislikes
@@ -105,7 +129,7 @@ async function updateEventData(userId, eventData) {
 export const fetchPeople = async (userId) => {
     try {
         const userSnap = await getDoc(getUserDoc(userId));
-        
+
         if (!userSnap.exists()) return [];
 
         const relationships = userSnap.data().Relationships;
@@ -131,7 +155,7 @@ export async function fetchTags(userId) {
         const userSnap = await getDoc(getUserDoc(userId));
 
         const tags = userSnap.data().Tags || [];
-        
+
         console.log("Tags fetched successfully:", tags);
         return tags;
     } catch (error) {
@@ -179,12 +203,12 @@ export const fetchEvents = async (userId) => {
     }
 };
 
-export const fetchPersonEvents = async(userId, personId) => {
+export const fetchPersonEvents = async (userId, personId) => {
     try {
         const userSnap = await getDoc(getUserDoc(userId));
         if (userSnap.exists()) {
             const events = userSnap.data().Events;
-            
+
             const filteredEvents = events.filter(eventObj => {
                 const eventDetails = Object.values(eventObj)[0];
                 return eventDetails.people.includes(personId);
@@ -195,7 +219,7 @@ export const fetchPersonEvents = async(userId, personId) => {
             return eventValues;
         }
         return [];
-        
+
     } catch (error) {
         console.error("Error fetching person events: ", error);
         return [];

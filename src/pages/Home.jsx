@@ -11,9 +11,9 @@ import {
 } from "@mui/material";
 import AddPersonForm from "../components/AddPersonForm";
 import ProfileCard from "../components/ProfileCard";
-import ReminderCard from "../components/ReminderCard";
+import ReminderCard from "../components/BirthdayCard";
 import { fetchPeople } from "../utilities/dbFunctions";
-import { fetchReminders } from "../utilities/reminderFunction";
+import { fetchBirthdays } from "../utilities/birthdayFunction";
 import { useNavigate, Link } from "react-router-dom";
 
 const Home = () => {
@@ -24,7 +24,6 @@ const Home = () => {
 
   const navigate = useNavigate();
   const handleNavigate = (personId) => {
-    console.log("HERE");
     navigate(`/profile/${personId}`);
   }
 
@@ -41,7 +40,7 @@ const Home = () => {
       setPeople(res);
     }).catch((err) => (console.log(err)))
 
-    fetchReminders("User1").then((res) => {
+    fetchBirthdays("User1").then((res) => {
       setReminders(res);
     }).catch((err) => (console.log(err)))
   }, [])
@@ -54,7 +53,7 @@ const Home = () => {
         gap: 2,
         margin: 2,
       }}>
-      <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
+      {/* <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
         Reminders
       </Typography>
       <Box
@@ -71,7 +70,7 @@ const Home = () => {
             date={reminder.date}>
           </ReminderCard>
         ))}
-      </Box>
+      </Box> */}
       <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
         People
       </Typography>
@@ -85,9 +84,10 @@ const Home = () => {
         {people.map((person, index) => (
           <Link to={`/profile/${person.id}`} style={{ textDecoration: 'none' }} key={index} >
             <ProfileCard
-              name={person.name}
+              firstName={person.firstName}
+              lastName={person.lastName}
               occupation={person.occupation}
-              tags={person.tags}
+              tags={person.relationshipTags}
               >
             </ProfileCard>
           </Link>
