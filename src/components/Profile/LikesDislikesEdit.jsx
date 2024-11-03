@@ -12,54 +12,21 @@ import {
   Typography,
 } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
-import { updateLikesDislikes } from '../../utilities/dbFunctions';
+import { updateProfileData } from '../../utilities/dbFunctions';
 
-
-const LikesDislikesEdit = ({ open, onClose, person, updateProfile, userId}) => {
-  // Initialize state with existing likes and dislikes, if any
+const LikesDislikesEdit = ({ open, onClose, person, updateProfile }) => {
   const [likes, setLikes] = useState(person.likes || []);
   const [dislikes, setDislikes] = useState(person.dislikes || []);
   const [newLike, setNewLike] = useState("");
   const [newDislike, setNewDislike] = useState("");
 
-  // Function to handle saving the updated likes and dislikes
-//   const handleSave = async () => {
-//     try {
-//       await updateLikesDislikes("User1", person.id, likes, dislikes); // Call the backend function with user and person IDs
-//       updateProfile({ likes, dislikes }); // Update local state in Profile component
-//       onClose(); // Close the modal after saving
-//     } catch (error) {
-//       console.error("Error saving likes/dislikes:", error);
-//     }
-//   };
   const handleSave = async () => {
     try {
-      // Call the backend function to update likes/dislikes in Firestore
-      await updateLikesDislikes(userId, person.id, likes, dislikes);
-
-      // Update the frontend profile with new likes and dislikes
-      updateProfile({
-        likes,
-        dislikes,
-      });
-
-      onClose(); // Close the modal
+      await updateProfileData(person.id, { likes, dislikes });
+      updateProfile({ likes, dislikes });
+      onClose();
     } catch (error) {
       console.error("Error saving likes and dislikes:", error);
-    }
-  };
-
-  const handleAddLike = () => {
-    if (newLike) {
-      setLikes([...likes, newLike]);
-      setNewLike("");
-    }
-  };
-
-  const handleAddDislike = () => {
-    if (newDislike) {
-      setDislikes([...dislikes, newDislike]);
-      setNewDislike("");
     }
   };
 
@@ -68,7 +35,6 @@ const LikesDislikesEdit = ({ open, onClose, person, updateProfile, userId}) => {
       <DialogTitle>Edit Likes & Dislikes</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 2 }}>
-          {/* Likes Section */}
           <Typography variant="subtitle1">Likes</Typography>
           {likes.map((like, index) => (
             <Box key={index} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -109,7 +75,6 @@ const LikesDislikesEdit = ({ open, onClose, person, updateProfile, userId}) => {
             </IconButton>
           </Box>
 
-          {/* Dislikes Section */}
           <Typography variant="subtitle1" sx={{ mt: 2 }}>Dislikes</Typography>
           {dislikes.map((dislike, index) => (
             <Box key={index} sx={{ display: "flex", alignItems: "center", gap: 1 }}>

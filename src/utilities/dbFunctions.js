@@ -87,22 +87,6 @@ export async function updateProfileData(userId, profileId, profileData) {
       };
     }
 }
-//Function to update likes and dislikes
-export const updateLikesDislikes = async (userId, personId, likes, dislikes) => {
-    try {
-      // Reference to the specific person document
-      const personDocRef = doc(db, USERS_COLLECTION, userId, "Relationships", personId);
-      
-      // Update the document with new likes and dislikes
-      await updateDoc(personDocRef, {
-        likes: likes,
-        dislikes: dislikes
-      });
-      console.log("Likes and dislikes updated successfully");
-    } catch (error) {
-      console.error("Error updating likes and dislikes: ", error);
-    }
-  };
   
 // Function to update event data for a specific user
 async function updateEventData(userId, eventData) {
