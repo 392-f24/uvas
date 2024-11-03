@@ -1,5 +1,5 @@
 import { db } from './firebase'
-import { doc, setDoc, updateDoc, arrayRemove, arrayUnion, collection, addDoc, getDoc, updateDoc, query, where } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, arrayRemove, arrayUnion, collection, addDoc, getDoc, query, where } from 'firebase/firestore';
 
 // Constants for collections
 const USERS_COLLECTION = 'Users';
