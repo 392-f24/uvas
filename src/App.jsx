@@ -74,10 +74,16 @@ function App() {
               {user && <NavigationBar />}
               <Box sx={{ marginTop: "20px" }}>
                 <Routes>
-                  <Route path="/login" element={<Login />} />
+                  <Route path="/login" element={<Login setUser={setUser} />} />
                   <Route
                     path="/"
-                    element={user ? <Home /> : <Navigate to="/login" />}
+                    element={
+                      user ? (
+                        <Home userId={user.uid} />
+                      ) : (
+                        <Navigate to="/login" />
+                      )
+                    }
                   />
                   <Route
                     path="/profile/:profileId"

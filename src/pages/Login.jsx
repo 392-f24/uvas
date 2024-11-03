@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Box, Typography } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 
-const Login = () => {
+const Login = ({ setUser }) => {
   const navigate = useNavigate();
 
   const handleSignIn = async () => {
@@ -13,6 +13,12 @@ const Login = () => {
     if (user) {
       navigate("/");
     }
+  };
+
+  const handleDemoLogin = () => {
+    const demoUser = { uid: "User1" };
+    setUser(demoUser);
+    navigate("/");
   };
 
   return (
@@ -34,6 +40,18 @@ const Login = () => {
         onClick={handleSignIn}
       >
         Sign in with Google
+      </Button>
+
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={handleDemoLogin}
+        sx={{
+          position: "absolute",
+          bottom: "20px",
+        }}
+      >
+        Demo
       </Button>
     </Box>
   );

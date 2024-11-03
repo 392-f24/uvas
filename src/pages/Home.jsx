@@ -3,7 +3,6 @@ import { useTheme } from "@mui/material/styles";
 import {
   Typography,
   Box,
-  Divider,
   Button,
   Dialog,
   DialogTitle,
@@ -16,7 +15,7 @@ import { fetchPeople } from "../utilities/dbFunctions";
 import { fetchReminders } from "../utilities/reminderFunction";
 import { useNavigate, Link } from "react-router-dom";
 
-const Home = () => {
+const Home = ({ userId }) => {
   const theme = useTheme();
   const [displayForm, setDisplayForm] = useState(false);
   const [people, setPeople] = useState([]);
@@ -36,18 +35,20 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchPeople("User1")
-      .then((res) => {
-        setPeople(res);
-      })
-      .catch((err) => console.log(err));
+    if (userId) {
+      fetchPeople(userId)
+        .then((res) => {
+          setPeople(res);
+        })
+        .catch((err) => console.log(err));
 
-    fetchReminders("User1")
-      .then((res) => {
-        setReminders(res);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+      fetchReminders(userId)
+        .then((res) => {
+          setReminders(res);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [userId]);
 
   return (
     <Box
@@ -68,20 +69,27 @@ const Home = () => {
           gap: 2,
         }}
       >
-        {people.map((person, index) => (
-          <Link
-            to={`/profile/${person.id}`}
-            style={{ textDecoration: "none" }}
-            key={index}
-          >
-            <ProfileCard
-              firstName={person.firstName}
-              lastName={person.lastName}
-              occupation={person.occupation}
-              tags={person.relationshipTags}
-            ></ProfileCard>
-          </Link>
-        ))}
+        {people.length > 0 ? (
+          people.map((person, index) => (
+            <Link
+              to={`/profile/${person.id}`}
+              style={{ textDecoration: "none" }}
+              key={index}
+            >
+              <ProfileCard
+                firstName={person.firstName}
+                lastName={person.lastName}
+                occupation={person.occupation}
+                tags={person.relationshipTags}
+              ></ProfileCard>
+            </Link>
+          ))
+        ) : (
+          <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+            You don't have any people added yet. Click{" "}
+            <strong>Add Person</strong> to get started!
+          </Typography>
+        )}
       </Box>
 
       <Button
