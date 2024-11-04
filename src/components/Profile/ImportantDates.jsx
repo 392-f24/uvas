@@ -31,35 +31,10 @@ const ImportantDates = ({ birthday, anniversary, OnEdit }) => (
           <CalendarToday fontSize="small" color="action" />
         </ListItemIcon>
         {/* DOUBLE CHECK */}
-        {birthday.date ? (
+        {birthday ? (
           <ListItemText
-            // primary={
-            //   <Box
-            //     sx={{
-            //       display: "flex",
-            //       justifyContent: "space-between",
-            //       alignItems: "center",
-            //     }}
-            //   >
-            //     <Typography>Birthday</Typography>
-            //     {birthday.remind ? (
-            //       <Chip
-            //         size="small"
-            //         label="Reminder Off"
-            //         color="success"
-            //         sx={{ ml: 1, height: 20 }}
-            //       />
-            //     ) : (
-            //       <Chip
-            //         size="small"
-            //         label="Reminder Off"
-            //         color="failure"
-            //         sx={{ ml: 1, height: 20 }}
-            //       />
-            //     )}
-            //   </Box>
-            // }
-            secondary={new Date(birthday.date).toLocaleDateString()}
+            primary="Birthday"
+            secondary={birthday.replace(/-/g, '/')}
           />
         ) : (
           <ListItemText primary={<EmptyState text="Add birthday" />} />
@@ -69,22 +44,10 @@ const ImportantDates = ({ birthday, anniversary, OnEdit }) => (
         <ListItemIcon sx={{ minWidth: 40 }}>
           <Favorite fontSize="small" color="action" />
         </ListItemIcon>
-        {anniversary.date ? (
+        {anniversary ? (
           <ListItemText
             primary="Anniversary"
-            secondary={
-              <>
-                {new Date(anniversary.date).toLocaleDateString()}
-                {anniversary.remind && (
-                  <Chip
-                    size="small"
-                    label="Reminder"
-                    color="success"
-                    sx={{ ml: 1, height: 20 }}
-                  />
-                )}
-              </>
-            }
+            secondary={anniversary.replace(/-/g, '/')}
           />
         ) : (
           <ListItemText primary={<EmptyState text="Add anniversary" />} />

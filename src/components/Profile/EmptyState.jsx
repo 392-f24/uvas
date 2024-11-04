@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Box, Typography } from "@mui/material";
-import { Add } from "@mui/icons-material";
+// import { Add } from "@mui/icons-material";
 
 const EmptyState = ({ text }) => (
   <Box
@@ -12,7 +12,7 @@ const EmptyState = ({ text }) => (
       fontSize: "0.875rem",
     }}
   >
-    <Add fontSize="small" />
+    {/* <Add fontSize="small" /> */}
     <Typography variant="body2" color="text.disabled">
       {text}
     </Typography>
