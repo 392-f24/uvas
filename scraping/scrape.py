@@ -7,8 +7,7 @@ from firebase_admin import firestore
 # This script is meant to run locally instead on the cloud
 driver = webdriver.Chrome()
 
-events_all = []
-unique_titles = set()
+events_all = {}
 base_url = 'https://yourchicagoguide.com/chicago-events-calendar/?_evDiscoveryPath=/'
 
 def getEvents(pageNumber):
@@ -41,16 +40,13 @@ def getEvents(pageNumber):
     # the first page has 35 events, the other pages have 30
     return events
 
-for i in range(1, 5): # first 4 pages. 82 unique events in total as of now
+for i in range(1, 3): # first 2 pages.
     for event in getEvents(i):
-        # Filter out events with duplicate titles
-        if event['title'] not in unique_titles:
-            events_all.append(event)
-            unique_titles.add(event['title'])
+        events_all[event["title"]] = event["link"]
     
 driver.quit()
 
-print(len(events_all), "events scraped")
+print(len(events_all.keys()), "events scraped")
 # for event in events_all:
 #     print(event["title"])
 
