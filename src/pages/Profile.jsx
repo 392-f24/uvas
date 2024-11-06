@@ -17,6 +17,7 @@ import SuggestGifts from "../components/Profile/SuggestGifts";
 import {
   fetchPersonProfile,
   fetchPersonEvents,
+  updateProfileData,
 } from "../utilities/dbFunctions";
 import { suggestGifts, suggestEvents } from "../utilities/cloudFunctions";
 
@@ -24,8 +25,7 @@ const Profile = () => {
   const { profileId } = useParams();
 
   const [person, setPerson] = useState();
-  const [giftSuggestions, setGiftSuggestions] = useState([]);
-  const [loadingGifts, setLoadingGifts] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Modal states for different sections
   const [openBasicInfo, setOpenBasicInfo] = useState(false);
@@ -40,13 +40,6 @@ const Profile = () => {
       })
       .catch((err) => console.log(err));
 
-    //TODO:  Fetch existing saved gifts from Firestore
-    // TODO: Replace with your Firestore fetch function
-    // const existingGifts = await fetchGiftsFromFirestore("User1", profileId);
-    // if (existingGifts) {
-    //   setGiftSuggestions(existingGifts);
-    // }
-
     suggestEvents({ user_id: "User1", profile_id: profileId })
       .then((res) => {
         console.log(res);
@@ -55,39 +48,52 @@ const Profile = () => {
   }, []);
 
   const handleSuggestGifts = async () => {
-    setLoadingGifts(true);
+    setLoading(true);
     try {
       const response = await suggestGifts({
         user_id: "User1",
         profile_id: profileId,
       });
-      setGiftSuggestions(response.data);
 
-      // Save to Firestore
-      // TODO: Replace with your Firestore save function
-      // await saveGiftsToFirestore("User1", profileId, response);
+      // Update both local state and database
+      const updatedPerson = {
+        ...person,
+        gifts: response.data,
+      };
+
+      await updateProfileData("User1", profileId, {
+        gifts: response.data,
+      });
+
+      setPerson(updatedPerson);
     } catch (error) {
       console.error("Error suggesting gifts:", error);
     } finally {
-      setLoadingGifts(false);
+      setLoading(false);
     }
   };
 
   const handleClearGifts = async () => {
     try {
-      setGiftSuggestions([]); // Clear the suggestions from state
-      // TODO: Also clear from Firestore if needed
-      // await clearGiftsFromFirestore("User1", profileId);
+      // Update both local state and database
+      const updatedPerson = {
+        ...person,
+        gifts: [],
+      };
+
+      await updateProfileData("User1", profileId, {
+        gifts: [],
+      });
+
+      setPerson(updatedPerson);
     } catch (error) {
       console.error("Error clearing gifts:", error);
     }
   };
 
-  // Helper function to update Firestore
   const updateProfile = async (newData) => {
     try {
-      // TODO: Firebase update function here
-      // await updateProfileData(profileId, newData);
+      await updateProfileData("User1", profileId, newData);
       setPerson((prev) => ({ ...prev, ...newData }));
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -139,8 +145,8 @@ const Profile = () => {
           <AdditionalInfo occupation={person.occupation} notes={person.notes} />
           <Divider sx={{ my: 2 }} />
           <SuggestGifts
-            gifts={giftSuggestions}
-            loading={loadingGifts}
+            gifts={person.gifts}
+            loading={loading}
             onSuggestGifts={handleSuggestGifts}
             onClearGifts={handleClearGifts}
           />
