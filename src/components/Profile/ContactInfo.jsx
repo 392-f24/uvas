@@ -43,7 +43,7 @@ const ContactInfo = ({ contactInfo, address, OnEdit }) => (
         {contactInfo?.email ? (
           <ListItemText primary={contactInfo.email} />
         ) : (
-          <ListItemText primary={<EmptyState text="Add email" />} />
+          <ListItemText primary={<EmptyState text="Email" />} />
         )}
       </ListItem>
       <ListItem disablePadding sx={{ mb: 1 }}>
@@ -53,7 +53,7 @@ const ContactInfo = ({ contactInfo, address, OnEdit }) => (
         {contactInfo?.phoneNumber ? (
           <ListItemText primary={contactInfo.phoneNumber} />
         ) : (
-          <ListItemText primary={<EmptyState text="Add phone number" />} />
+          <ListItemText primary={<EmptyState text="Phone number" />} />
         )}
       </ListItem>
 
@@ -64,7 +64,7 @@ const ContactInfo = ({ contactInfo, address, OnEdit }) => (
         {address ? (
           <ListItemText primary={address} />
         ) : (
-          <ListItemText primary={<EmptyState text="Add address" />} />
+          <ListItemText primary={<EmptyState text="Address" />} />
         )}
       </ListItem>
 
@@ -76,7 +76,7 @@ const ContactInfo = ({ contactInfo, address, OnEdit }) => (
         {contactInfo?.others?.Instagram ? (
           <ListItemText primary={contactInfo.others.Instagram} />
         ) : (
-          <ListItemText primary={<EmptyState text="Add Instagram" />} />
+          <ListItemText primary={<EmptyState text="Instagram" />} />
         )}
       </ListItem>
       <ListItem disablePadding>
@@ -86,7 +86,7 @@ const ContactInfo = ({ contactInfo, address, OnEdit }) => (
         {contactInfo?.others?.LinkedIn ? (
           <ListItemText primary={contactInfo.others.LinkedIn} />
         ) : (
-          <ListItemText primary={<EmptyState text="Add LinkedIn" />} />
+          <ListItemText primary={<EmptyState text="LinkedIn" />} />
         )}
       </ListItem>
     </List>

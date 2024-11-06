@@ -37,7 +37,7 @@ const ImportantDates = ({ birthday, anniversary, OnEdit }) => (
             secondary={birthday.replace(/-/g, '/')}
           />
         ) : (
-          <ListItemText primary={<EmptyState text="Add birthday" />} />
+          <ListItemText primary={<EmptyState text="Birthday" />} />
         )}
       </ListItem>
       <ListItem disablePadding>
@@ -50,7 +50,7 @@ const ImportantDates = ({ birthday, anniversary, OnEdit }) => (
             secondary={anniversary.replace(/-/g, '/')}
           />
         ) : (
-          <ListItemText primary={<EmptyState text="Add anniversary" />} />
+          <ListItemText primary={<EmptyState text="Anniversary" />} />
         )}
       </ListItem>
     </List>
