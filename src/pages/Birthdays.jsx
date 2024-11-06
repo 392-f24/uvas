@@ -53,7 +53,7 @@ const Birthdays = () => {
         margin: 2,
       }}>
       <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
-        Birthdays
+        Upcoming Birthdays
       </Typography>
       <Box
         sx={{
