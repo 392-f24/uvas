@@ -100,7 +100,7 @@ const Home = ({ userId }) => {
       <Dialog open={displayForm} onClose={closeForm} fullWidth maxWidth="sm">
         <DialogTitle>Add a New Person</DialogTitle>
         <DialogContent>
-          <AddPersonForm />
+          <AddPersonForm userId={userId} />
         </DialogContent>
       </Dialog>
     </Box>

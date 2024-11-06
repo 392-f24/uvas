@@ -1,19 +1,22 @@
 /*
 changes:
 [X] restructure form to be consistent with profile page
-[ ] update data structure to match new backend
+[X] update data structure to match new backend
 [X] update address to be under contactInfo
-[ ] add likes field
-[ ] add dislikes field
+[X] add likes field
+[X] add dislikes field
 [ ] change the dynamic ones to be how they are in the profile page
 [X] remove toggle from anniversary
 [X] remove toggle from birthday
 [X] add heading for additional information
+[ ] handle submission
 */
 
 import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useFormData } from "../utilities/useFormData";
+import { addPerson } from "../utilities/dbFunctions";
+import { v4 as uuidv4 } from "uuid";
 import {
   Typography,
   TextField,
@@ -29,6 +32,47 @@ import {
 } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
 
+const demoData = {
+  avatar: "",
+  firstName: "Samantha",
+  lastName: "Woods",
+  relationshipTags: ["Friend"],
+  birthday: "2002-03-04",
+  anniversary: "",
+  likes: ["Video games", "Rock climbing", "Soccer", "Traveling"],
+  dislikes: ["Spicy food", "Cold weather"],
+  contactInfo: {
+    address: "633 Clark St, Chicago, IL 60610",
+    phoneNumber: "8293748203",
+    email: "sam.woods@gmail.com",
+    others: {
+      Instagram: "@samwoods",
+      "Emergency Contact": "John Woods",
+    },
+  },
+  occupation: "Student",
+  notes: "CS Major and DSGN minor",
+};
+
+const defaultData = {
+  avatar: "",
+  firstName: "",
+  lastName: "",
+  relationshipTags: [],
+  birthday: "",
+  anniversary: "",
+  likes: [],
+  dislikes: [],
+  contactInfo: {
+    address: "",
+    phoneNumber: "",
+    email: "",
+    others: {},
+  },
+  occupation: "",
+  notes: "",
+};
+
 const validateForm = (key, val) => {
   switch (key) {
     case "firstName":
@@ -42,32 +86,12 @@ const validateForm = (key, val) => {
   }
 };
 
-const AddPersonForm = ({ user }) => {
+const AddPersonForm = ({ userId }) => {
   const theme = useTheme();
 
-  const [state, change] = useFormData(
-    validateForm,
-    user || {
-      avatar: "",
-      firstName: "",
-      lastName: "",
-      relationshipTags: [],
-      birthday: "",
-      anniversary: "",
-      likes: [],
-      dislikes: [],
-      contactInfo: {
-        address: "",
-        phoneNumber: "",
-        email: "",
-        others: {},
-      },
-      occupation: "",
-      notes: "",
-    }
-  );
+  const [state, change] = useFormData(validateForm, demoData);
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     const filteredOthers = Object.fromEntries(
@@ -76,8 +100,11 @@ const AddPersonForm = ({ user }) => {
       )
     );
 
-    const filteredState = {
+    const personId = uuidv4();
+
+    const person = {
       ...state.values,
+      id: personId,
       likes,
       dislikes,
       contactInfo: {
@@ -86,8 +113,10 @@ const AddPersonForm = ({ user }) => {
       },
     };
 
-    console.log(state.values);
-    console.log(filteredState);
+    console.log(userId);
+    console.log(person);
+
+    await addPerson(userId, person);
   };
 
   const SectionLabel = ({ label }) => {
@@ -219,6 +248,26 @@ const AddPersonForm = ({ user }) => {
     setDislikes(dislikes.filter((_, i) => i !== index));
   };
 
+  const handleNestedChange = (e) => {
+    const { id, value } = e.target;
+    const keys = id.split(".");
+    const lastKey = keys.pop();
+    let obj = state.values;
+
+    keys.forEach((key) => {
+      if (!obj[key]) obj[key] = {};
+      obj = obj[key];
+    });
+    obj[lastKey] = value;
+
+    change({
+      target: {
+        id: keys[0],
+        value: { ...state.values[keys[0]], [lastKey]: value },
+      },
+    });
+  };
+
   return (
     <form
       onSubmit={onSubmit}
@@ -325,20 +374,20 @@ const AddPersonForm = ({ user }) => {
       <TextField
         label="Birthday"
         type="date"
-        id="birthday.date"
-        name="birthday.date"
-        value={state.values.birthday.date}
+        id="birthday"
+        name="birthday"
+        value={state.values.birthday}
         onChange={change}
-        InputLabelProps={{ shrink: true }}
+        // InputLabelProps={{ shrink: true }}
       />
       <TextField
         label="Anniversary"
         type="date"
-        id="anniversary.date"
-        name="anniversary.date"
-        value={state.values.anniversary.date}
+        id="anniversary"
+        name="anniversary"
+        value={state.values.anniversary}
         onChange={change}
-        InputLabelProps={{ shrink: true }}
+        // InputLabelProps={{ shrink: true }}
       />
 
       {/* LIKES + DISLIKES */}
@@ -372,11 +421,11 @@ const AddPersonForm = ({ user }) => {
       </Box>
 
       <SectionLabel label="Dislikes" />
-      {dislikes.map((like, index) => (
+      {dislikes.map((dislike, index) => (
         <Box key={index} display="flex" alignItems="center" gap={1}>
           <TextField
             fullWidth
-            value={dislikes}
+            value={dislike}
             onChange={(e) => {
               const updatedDislikes = [...dislikes];
               updatedDislikes[index] = e.target.value;
@@ -407,21 +456,21 @@ const AddPersonForm = ({ user }) => {
         id="contactInfo.phoneNumber"
         name="contactInfo.phoneNumber"
         value={state.values.contactInfo.phoneNumber}
-        onChange={change}
+        onChange={handleNestedChange}
       />
       <TextField
         label="Email"
         id="contactInfo.email"
         name="contactInfo.email"
         value={state.values.contactInfo.email}
-        onChange={change}
+        onChange={handleNestedChange}
       />
       <TextField
         label="Address"
-        id="address"
-        name="address"
-        value={state.values.address}
-        onChange={change}
+        id="contactInfo.address"
+        name="contactInfo.address"
+        value={state.values.contactInfo.address}
+        onChange={handleNestedChange}
       />
       {Object.entries(state.values.contactInfo.others).map(
         ([label, value], i) => (
