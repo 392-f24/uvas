@@ -6,7 +6,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Button,
+  IconButton,
 } from "@mui/material";
 import { CardGiftcard, Refresh, Clear } from "@mui/icons-material";
 
@@ -43,7 +43,6 @@ const SuggestGifts = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          mb: 1,
         }}
       >
         <Typography
@@ -54,30 +53,17 @@ const SuggestGifts = ({
         >
           Gift Suggestions
         </Typography>
-        <Box sx={{ display: "flex", gap: 1 }}>
+        <Box>
+          <IconButton size="small" onClick={onSuggestGifts} sx={{ ml: 1 }}>
+            <Refresh fontSize="small" />
+          </IconButton>
           {gifts.length > 0 && (
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={onClearGifts}
-              startIcon={<Clear fontSize="small" />}
-              color="error"
-            >
-              Clear
-            </Button>
+            <IconButton size="small" onClick={onClearGifts} sx={{ ml: 1 }}>
+              <Clear fontSize="small" />
+            </IconButton>
           )}
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={onSuggestGifts}
-            startIcon={<Refresh fontSize="small" />}
-            disabled={loading}
-          >
-            {gifts.length ? "Refresh Suggestions" : "Suggest Gifts"}
-          </Button>
         </Box>
       </Box>
-
       <List dense disablePadding>
         {gifts.length > 0 ? (
           gifts.map((gift, index) => (
