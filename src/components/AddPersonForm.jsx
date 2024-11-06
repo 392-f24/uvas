@@ -1,3 +1,16 @@
+/*
+changes:
+[X] restructure form to be consistent with profile page
+[ ] update data structure to match new backend
+[X] update address to be under contactInfo
+[ ] add likes field
+[ ] add dislikes field
+[ ] change the dynamic ones to be how they are in the profile page
+[X] remove toggle from anniversary
+[X] remove toggle from birthday
+[X] add heading for additional information
+*/
+
 import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useFormData } from "../utilities/useFormData";
@@ -5,8 +18,6 @@ import {
   Typography,
   TextField,
   Button,
-  Switch,
-  FormControlLabel,
   Box,
   Chip,
   Dialog,
@@ -14,7 +25,9 @@ import {
   DialogContent,
   DialogActions,
   Input,
+  IconButton,
 } from "@mui/material";
+import { Add, Delete } from "@mui/icons-material";
 
 const validateForm = (key, val) => {
   switch (key) {
@@ -38,21 +51,17 @@ const AddPersonForm = ({ user }) => {
       avatar: "",
       firstName: "",
       lastName: "",
+      relationshipTags: [],
+      birthday: "",
+      anniversary: "",
+      likes: [],
+      dislikes: [],
       contactInfo: {
+        address: "",
         phoneNumber: "",
         email: "",
         others: {},
       },
-      relationshipTags: [],
-      birthday: {
-        date: "",
-        remind: true,
-      },
-      anniversary: {
-        date: "",
-        remind: false,
-      },
-      address: "",
       occupation: "",
       notes: "",
     }
@@ -69,6 +78,8 @@ const AddPersonForm = ({ user }) => {
 
     const filteredState = {
       ...state.values,
+      likes,
+      dislikes,
       contactInfo: {
         ...state.values.contactInfo,
         others: filteredOthers,
@@ -102,11 +113,14 @@ const AddPersonForm = ({ user }) => {
   const [newTag, setNewTag] = useState("");
   const [displayCustomTagForm, setDisplayCustomTagForm] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(null);
-
   const [displayCustomContactForm, setDisplayCustomContactForm] =
     useState(false);
   const [customContactLabel, setCustomContactLabel] = useState("");
   const [customContactValue, setCustomContactValue] = useState("");
+  const [likes, setLikes] = useState(state.values.likes || []);
+  const [dislikes, setDislikes] = useState(state.values.dislikes || []);
+  const [newLike, setNewLike] = useState("");
+  const [newDislike, setNewDislike] = useState("");
 
   const toggleTag = (tag) => {
     const newTags = state.values.relationshipTags.includes(tag)
@@ -183,6 +197,28 @@ const AddPersonForm = ({ user }) => {
     });
   };
 
+  const handleAddLike = () => {
+    if (newLike.trim()) {
+      setLikes([...likes, newLike.trim()]);
+      setNewLike("");
+    }
+  };
+
+  const handleAddDislike = () => {
+    if (newDislike.trim()) {
+      setDislikes([...dislikes, newDislike.trim()]);
+      setNewDislike("");
+    }
+  };
+
+  const handleRemoveLike = (index) => {
+    setLikes(likes.filter((_, i) => i !== index));
+  };
+
+  const handleRemoveDislike = (index) => {
+    setDislikes(dislikes.filter((_, i) => i !== index));
+  };
+
   return (
     <form
       onSubmit={onSubmit}
@@ -190,33 +226,13 @@ const AddPersonForm = ({ user }) => {
       className={state.errors ? "was-validated" : null}
       style={{ display: "flex", flexDirection: "column", gap: "16px" }}
     >
-      <SectionLabel label="Basic Info" />
-
-      <TextField
-        label="First Name"
-        id="firstName"
-        name="firstName"
-        value={state.values.firstName}
-        error={!!state.errors?.firstName}
-        helperText={state.errors?.firstName}
-        onChange={change}
-        required
-      />
-
-      <TextField
-        label="Last Name"
-        id="lastName"
-        name="lastName"
-        value={state.values.lastName}
-        onChange={change}
-      />
-
-      <SectionLabel label="Person Photo" />
+      {/* PROFILE PHOTO */}
+      <SectionLabel label="Profile Photo" />
       {avatarPreview && (
         <Box mt={2}>
           <img
             src={avatarPreview}
-            alt="Person photo preview"
+            alt="Profile photo preview"
             style={{
               width: "100px",
               height: "100px",
@@ -232,8 +248,160 @@ const AddPersonForm = ({ user }) => {
         onChange={handleAvatarChange}
       />
 
-      <SectionLabel label="Contact Info" />
+      {/* BASIC INFO */}
+      <SectionLabel label="Basic Info" />
+      <TextField
+        label="First Name"
+        id="firstName"
+        name="firstName"
+        value={state.values.firstName}
+        error={!!state.errors?.firstName}
+        helperText={state.errors?.firstName}
+        onChange={change}
+        required
+      />
+      <TextField
+        label="Last Name"
+        id="lastName"
+        name="lastName"
+        value={state.values.lastName}
+        onChange={change}
+      />
 
+      {/* RELATIONSHIP TAGS */}
+      <SectionLabel label="Relationship Tag(s)" />
+      <Box display="flex" flexWrap="wrap" gap={1}>
+        {tags.map((tag) => (
+          <Chip
+            key={tag}
+            label={tag}
+            onClick={() => toggleTag(tag)}
+            style={{
+              backgroundColor: state.values.relationshipTags.includes(tag)
+                ? theme.palette.primary.main
+                : theme.palette.secondary.light,
+              color: state.values.relationshipTags.includes(tag)
+                ? theme.palette.primary.contrastText
+                : theme.palette.text.primary,
+            }}
+          />
+        ))}
+      </Box>
+      <Button variant="outlined" onClick={() => setDisplayCustomTagForm(true)}>
+        Add Custom Tag
+      </Button>
+      <Dialog
+        open={displayCustomTagForm}
+        onClose={() => setDisplayCustomTagForm(false)}
+      >
+        <DialogTitle>Add Custom Tag</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="New Tag"
+            value={newTag}
+            onChange={(e) => setNewTag(e.target.value)}
+            // fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleAddCustomTag}
+            variant="contained"
+            color="primary"
+          >
+            Add
+          </Button>
+          <Button onClick={() => setDisplayCustomTagForm(false)}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+      {state.errors?.relationshipTags && (
+        <Typography color="error" fontSize="0.75rem">
+          {state.errors.relationshipTags}
+        </Typography>
+      )}
+
+      {/* IMPORTANT DATES */}
+      <SectionLabel label="Important Dates" />
+      <TextField
+        label="Birthday"
+        type="date"
+        id="birthday.date"
+        name="birthday.date"
+        value={state.values.birthday.date}
+        onChange={change}
+        InputLabelProps={{ shrink: true }}
+      />
+      <TextField
+        label="Anniversary"
+        type="date"
+        id="anniversary.date"
+        name="anniversary.date"
+        value={state.values.anniversary.date}
+        onChange={change}
+        InputLabelProps={{ shrink: true }}
+      />
+
+      {/* LIKES + DISLIKES */}
+      <SectionLabel label="Likes" />
+      {likes.map((like, index) => (
+        <Box key={index} display="flex" alignItems="center" gap={1}>
+          <TextField
+            fullWidth
+            value={like}
+            onChange={(e) => {
+              const updatedLikes = [...likes];
+              updatedLikes[index] = e.target.value;
+              setLikes(updatedLikes);
+            }}
+          />
+          <IconButton color="error" onClick={() => handleRemoveLike(index)}>
+            <Delete />
+          </IconButton>
+        </Box>
+      ))}
+      <Box display="flex" gap={1}>
+        <TextField
+          label="Add Like"
+          fullWidth
+          value={newLike}
+          onChange={(e) => setNewLike(e.target.value)}
+        />
+        <IconButton color="primary" onClick={handleAddLike}>
+          <Add />
+        </IconButton>
+      </Box>
+
+      <SectionLabel label="Dislikes" />
+      {dislikes.map((like, index) => (
+        <Box key={index} display="flex" alignItems="center" gap={1}>
+          <TextField
+            fullWidth
+            value={dislikes}
+            onChange={(e) => {
+              const updatedDislikes = [...dislikes];
+              updatedDislikes[index] = e.target.value;
+              setDislikes(updatedDislikes);
+            }}
+          />
+          <IconButton color="error" onClick={() => handleRemoveDislike(index)}>
+            <Delete />
+          </IconButton>
+        </Box>
+      ))}
+      <Box display="flex" gap={1}>
+        <TextField
+          label="Add Dislike"
+          fullWidth
+          value={newDislike}
+          onChange={(e) => setNewDislike(e.target.value)}
+        />
+        <IconButton color="primary" onClick={handleAddDislike}>
+          <Add />
+        </IconButton>
+      </Box>
+
+      {/* CONTACT INFO */}
+      <SectionLabel label="Contact Info" />
       <TextField
         label="Phone Number"
         id="contactInfo.phoneNumber"
@@ -241,7 +409,6 @@ const AddPersonForm = ({ user }) => {
         value={state.values.contactInfo.phoneNumber}
         onChange={change}
       />
-
       <TextField
         label="Email"
         id="contactInfo.email"
@@ -249,7 +416,13 @@ const AddPersonForm = ({ user }) => {
         value={state.values.contactInfo.email}
         onChange={change}
       />
-
+      <TextField
+        label="Address"
+        id="address"
+        name="address"
+        value={state.values.address}
+        onChange={change}
+      />
       {Object.entries(state.values.contactInfo.others).map(
         ([label, value], i) => (
           <TextField
@@ -260,14 +433,12 @@ const AddPersonForm = ({ user }) => {
           />
         )
       )}
-
       <Button
         variant="outlined"
         onClick={() => setDisplayCustomContactForm(true)}
       >
         Add Custom Contact Info
       </Button>
-
       <Dialog
         open={displayCustomContactForm}
         onClose={() => setDisplayCustomContactForm(false)}
@@ -302,113 +473,8 @@ const AddPersonForm = ({ user }) => {
         </DialogActions>
       </Dialog>
 
-      <SectionLabel label="Relationship Tags" />
-
-      <Box display="flex" flexWrap="wrap" gap={1}>
-        {tags.map((tag) => (
-          <Chip
-            key={tag}
-            label={tag}
-            onClick={() => toggleTag(tag)}
-            style={{
-              backgroundColor: state.values.relationshipTags.includes(tag)
-                ? theme.palette.primary.main
-                : theme.palette.secondary.light,
-              color: state.values.relationshipTags.includes(tag)
-                ? theme.palette.primary.contrastText
-                : theme.palette.text.primary,
-            }}
-          />
-        ))}
-      </Box>
-
-      <Button variant="outlined" onClick={() => setDisplayCustomTagForm(true)}>
-        Add Custom Tag
-      </Button>
-
-      <Dialog
-        open={displayCustomTagForm}
-        onClose={() => setDisplayCustomTagForm(false)}
-      >
-        <DialogTitle>Add Custom Tag</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="New Tag"
-            value={newTag}
-            onChange={(e) => setNewTag(e.target.value)}
-            // fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleAddCustomTag}
-            variant="contained"
-            color="primary"
-          >
-            Add
-          </Button>
-          <Button onClick={() => setDisplayCustomTagForm(false)}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
-
-      {state.errors?.relationshipTags && (
-        <Typography color="error" fontSize="0.75rem">
-          {state.errors.relationshipTags}
-        </Typography>
-      )}
-
-      <SectionLabel label="Important Dates Info" />
-
-      <TextField
-        label="Birthday"
-        type="date"
-        id="birthday.date"
-        name="birthday.date"
-        value={state.values.birthday.date}
-        onChange={change}
-        InputLabelProps={{ shrink: true }}
-      />
-      <FormControlLabel
-        control={
-          <Switch
-            id="birthday.remind"
-            name="birthday.remind"
-            checked={state.values.birthday.remind}
-            onChange={change}
-          />
-        }
-        label="Remind me about the birthday"
-      />
-
-      <TextField
-        label="Anniversary"
-        type="date"
-        id="anniversary.date"
-        name="anniversary.date"
-        value={state.values.anniversary.date}
-        onChange={change}
-        InputLabelProps={{ shrink: true }}
-      />
-      <FormControlLabel
-        control={
-          <Switch
-            id="anniversary.remind"
-            name="anniversary.remind"
-            checked={state.values.anniversary.remind}
-            onChange={change}
-          />
-        }
-        label="Remind me about the anniversary"
-      />
-
-      <TextField
-        label="Address"
-        id="address"
-        name="address"
-        value={state.values.address}
-        onChange={change}
-      />
-
+      {/* ADDITIONAL INFO */}
+      <SectionLabel label="Additional Info" />
       <TextField
         label="Occupation"
         id="occupation"
@@ -416,7 +482,6 @@ const AddPersonForm = ({ user }) => {
         defaultValue={state.values.occupation}
         onChange={change}
       />
-
       <TextField
         label="Notes"
         id="notes"
@@ -426,7 +491,6 @@ const AddPersonForm = ({ user }) => {
         multiline
         rows={4}
       />
-
       <Button type="submit" variant="contained" color="primary">
         Submit
       </Button>
