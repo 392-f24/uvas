@@ -1,21 +1,7 @@
-/*
-changes:
-[X] restructure form to be consistent with profile page
-[X] update data structure to match new backend
-[X] update address to be under contactInfo
-[X] add likes field
-[X] add dislikes field
-[ ] change the dynamic ones to be how they are in the profile page
-[X] remove toggle from anniversary
-[X] remove toggle from birthday
-[X] add heading for additional information
-[ ] handle submission
-*/
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useFormData } from "../utilities/useFormData";
-import { addPerson } from "../utilities/dbFunctions";
+import { addPerson, fetchTags, updateTags } from "../utilities/dbFunctions";
 import { v4 as uuidv4 } from "uuid";
 import {
   Typography,
@@ -89,7 +75,7 @@ const validateForm = (key, val) => {
 const AddPersonForm = ({ userId }) => {
   const theme = useTheme();
 
-  const [state, change] = useFormData(validateForm, demoData);
+  const [state, change] = useFormData(validateForm, defaultData);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -117,6 +103,7 @@ const AddPersonForm = ({ userId }) => {
     console.log(person);
 
     await addPerson(userId, person);
+    await updateTags(userId, person.relationshipTags);
   };
 
   const SectionLabel = ({ label }) => {
@@ -133,12 +120,8 @@ const AddPersonForm = ({ userId }) => {
   };
 
   // TODO: fetch tags from database
-  const [tags, setTags] = useState([
-    "Friend",
-    "Family",
-    "Coworker",
-    "Acquaintance",
-  ]);
+  const [tags, setTags] = useState([]);
+
   const [newTag, setNewTag] = useState("");
   const [displayCustomTagForm, setDisplayCustomTagForm] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(null);
@@ -150,6 +133,15 @@ const AddPersonForm = ({ userId }) => {
   const [dislikes, setDislikes] = useState(state.values.dislikes || []);
   const [newLike, setNewLike] = useState("");
   const [newDislike, setNewDislike] = useState("");
+
+  useEffect(() => {
+    const fetchUserTags = async () => {
+      const userTags = await fetchTags(userId);
+      setTags(userTags);
+    };
+
+    fetchUserTags();
+  }, [userId]);
 
   const toggleTag = (tag) => {
     const newTags = state.values.relationshipTags.includes(tag)

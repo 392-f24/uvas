@@ -8,6 +8,7 @@ import {
   query,
   where,
   updateDoc,
+  arrayUnion,
 } from "firebase/firestore";
 
 // Constants for collections
@@ -48,6 +49,19 @@ export const addPerson = async (userId, person) => {
     console.log("Person added successfully");
   } catch (error) {
     console.error("Error adding person: ", error);
+  }
+};
+
+// Function to new tags to a user
+export const updateTags = async (userId, tags) => {
+  try {
+    const userRef = getUserDoc(userId);
+    await updateDoc(userRef, {
+      Tags: arrayUnion(...tags),
+    });
+    console.log("Tags updated successfully");
+  } catch (error) {
+    console.error("Error updating tags: ", error);
   }
 };
 
