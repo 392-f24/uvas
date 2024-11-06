@@ -68,7 +68,7 @@ const SuggestEvents = ({
       </Box>
 
       <List dense disablePadding>
-        {activities.length > 0 ? (
+        {activities.length > 0 && !loading ? (
           activities.map((activity, index) => (
             <ListItem
               key={index}
@@ -105,7 +105,11 @@ const SuggestEvents = ({
               <Event fontSize="small" color="action" />
             </ListItemIcon>
             <ListItemText
-              primary="Click the button to get activity suggestions"
+              primary={
+                loading
+                  ? "Loading ..."
+                  : "Click the button to get activity suggestions"
+              }
               sx={{ color: "text.disabled" }}
             />
           </ListItem>

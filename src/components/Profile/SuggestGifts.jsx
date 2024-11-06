@@ -65,7 +65,7 @@ const SuggestGifts = ({
         </Box>
       </Box>
       <List dense disablePadding>
-        {gifts.length > 0 ? (
+        {gifts.length > 0 && !loading ? (
           gifts.map((gift, index) => (
             <ListItem key={index} disablePadding sx={{ mb: 1 }}>
               <ListItemIcon sx={{ minWidth: 40 }}>
@@ -80,7 +80,11 @@ const SuggestGifts = ({
               <CardGiftcard fontSize="small" color="action" />
             </ListItemIcon>
             <ListItemText
-              primary="Click the button to get gift suggestions"
+              primary={
+                loading
+                  ? "Loading ..."
+                  : "Click the button to get gift suggestions"
+              }
               sx={{ color: "text.disabled" }}
             />
           </ListItem>
