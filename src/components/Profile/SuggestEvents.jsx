@@ -6,10 +6,10 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Button,
+  IconButton,
   Link,
 } from "@mui/material";
-import { Event, Refresh, Clear, OpenInNew } from "@mui/icons-material";
+import { Event, Refresh, Clear } from "@mui/icons-material";
 
 // Custom numbered circle component
 const NumberIcon = ({ number }) => (
@@ -55,27 +55,15 @@ const SuggestEvents = ({
         >
           Activity Suggestions
         </Typography>
-        <Box sx={{ display: "flex", gap: 1 }}>
+        <Box>
           {activities.length > 0 && (
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={onClearEvents}
-              startIcon={<Clear fontSize="small" />}
-              color="error"
-            >
-              Clear
-            </Button>
+            <IconButton size="small" onClick={onClearEvents} sx={{ ml: 1 }}>
+              <Clear fontSize="small" />
+            </IconButton>
           )}
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={onSuggestEvents}
-            startIcon={<Refresh fontSize="small" />}
-            disabled={loading}
-          >
-            {activities.length ? "Refresh Activities" : "Suggest Activities"}
-          </Button>
+          <IconButton size="small" onClick={onSuggestEvents} sx={{ ml: 1 }}>
+            <Refresh fontSize="small" />
+          </IconButton>
         </Box>
       </Box>
 
@@ -85,22 +73,30 @@ const SuggestEvents = ({
             <ListItem
               key={index}
               disablePadding
-              sx={{ mb: 1 }}
-              secondaryAction={
-                <Link
-                  href={activity.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{ display: "flex", alignItems: "center" }}
-                >
-                  <OpenInNew fontSize="small" sx={{ ml: 1 }} />
-                </Link>
-              }
+              sx={{
+                mb: 1,
+                display: "flex",
+                alignItems: "flex-start",
+              }}
             >
               <ListItemIcon sx={{ minWidth: 40 }}>
                 <NumberIcon number={index + 1} />
               </ListItemIcon>
-              <ListItemText primary={activity.title} />
+              <Link
+                href={activity.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  textDecoration: "none",
+                  color: "secondary.dark",
+                  "&:hover": {
+                    textDecoration: "underline",
+                    color: "primary.main",
+                  },
+                }}
+              >
+                <ListItemText primary={activity.title} />
+              </Link>
             </ListItem>
           ))
         ) : (

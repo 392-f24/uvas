@@ -54,14 +54,14 @@ const SuggestGifts = ({
           Gift Suggestions
         </Typography>
         <Box>
-          <IconButton size="small" onClick={onSuggestGifts} sx={{ ml: 1 }}>
-            <Refresh fontSize="small" />
-          </IconButton>
           {gifts.length > 0 && (
             <IconButton size="small" onClick={onClearGifts} sx={{ ml: 1 }}>
               <Clear fontSize="small" />
             </IconButton>
           )}
+          <IconButton size="small" onClick={onSuggestGifts} sx={{ ml: 1 }}>
+            <Refresh fontSize="small" />
+          </IconButton>
         </Box>
       </Box>
       <List dense disablePadding>
