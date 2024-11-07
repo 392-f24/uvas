@@ -12,13 +12,22 @@ import ImportantDates from "../components/Profile/ImportantDates";
 import ContactInfo from "../components/Profile/ContactInfo";
 import AdditionalInfo from "../components/Profile/AdditionalInfo";
 import EventsCard from "../components/Profile/EventsCard";
-import { fetchPersonProfile, fetchPersonEvents } from "../utilities/dbFunctions";
-import {suggestGifts, suggestEvents} from "../utilities/cloudFunctions";
+import SuggestGifts from "../components/Profile/SuggestGifts";
+import SuggestEvents from "../components/Profile/SuggestEvents";
+
+import {
+  fetchPersonProfile,
+  fetchPersonEvents,
+  updateProfileData,
+} from "../utilities/dbFunctions";
+import { suggestGifts, suggestEvents } from "../utilities/cloudFunctions";
 
 const Profile = () => {
   const { profileId } = useParams();
-  
+
   const [person, setPerson] = useState();
+  const [giftsLoading, setGiftsLoading] = useState(false);
+  const [eventsLoading, setEventsLoading] = useState(false);
 
   // Modal states for different sections
   const [openBasicInfo, setOpenBasicInfo] = useState(false);
@@ -27,21 +36,104 @@ const Profile = () => {
   const [openAdditional, setOpenAdditional] = useState(false);
 
   useEffect(() => {
+    fetchPersonProfile("User1", profileId)
+      .then((res) => {
+        setPerson({ ...res });
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
-    fetchPersonProfile("User1", profileId).then((res) => {
-      setPerson({...res});
-    }).catch((err) => console.log(err));
-    // suggestGifts({user_id:"User1", profile_id: profileId}).then((res) => {
-    //   console.log(res);
-    // }).catch((err) => console.log(err));
-  }, [])
+  const handleSuggestGifts = async () => {
+    setGiftsLoading(true);
+    try {
+      const response = await suggestGifts({
+        user_id: "User1",
+        profile_id: profileId,
+      });
 
+      // Update both local state and database
+      const updatedPerson = {
+        ...person,
+        gifts: response.data,
+      };
 
-  // Helper function to update Firestore
+      await updateProfileData("User1", profileId, {
+        gifts: response.data,
+      });
+
+      setPerson(updatedPerson);
+    } catch (error) {
+      console.error("Error suggesting gifts:", error);
+    } finally {
+      setGiftsLoading(false);
+    }
+  };
+
+  const handleClearGifts = async () => {
+    try {
+      // Update both local state and database
+      const updatedPerson = {
+        ...person,
+        gifts: [],
+      };
+
+      await updateProfileData("User1", profileId, {
+        gifts: [],
+      });
+
+      setPerson(updatedPerson);
+    } catch (error) {
+      console.error("Error clearing gifts:", error);
+    }
+  };
+
+  const handleSuggestEvents = async () => {
+    setEventsLoading(true);
+    try {
+      const response = await suggestEvents({
+        user_id: "User1",
+        profile_id: profileId,
+      });
+
+      // Update both local state and database
+      const updatedPerson = {
+        ...person,
+        activities: response.data,
+      };
+
+      await updateProfileData("User1", profileId, {
+        activities: response.data,
+      });
+
+      setPerson(updatedPerson);
+    } catch (error) {
+      console.error("Error suggesting events:", error);
+    } finally {
+      setEventsLoading(false);
+    }
+  };
+
+  const handleClearEvents = async () => {
+    try {
+      // Update both local state and database
+      const updatedPerson = {
+        ...person,
+        activities: [],
+      };
+
+      await updateProfileData("User1", profileId, {
+        activities: [],
+      });
+
+      setPerson(updatedPerson);
+    } catch (error) {
+      console.error("Error clearing events:", error);
+    }
+  };
+
   const updateProfile = async (newData) => {
     try {
-      // TODO: Firebase update function here
-      // await updateProfileData(profileId, newData);
+      await updateProfileData("User1", profileId, newData);
       setPerson((prev) => ({ ...prev, ...newData }));
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -49,9 +141,7 @@ const Profile = () => {
   };
 
   if (!person) {
-    return (
-      <Typography>Loading...</Typography>
-    )
+    return <Typography>Loading...</Typography>;
   }
 
   return (
@@ -93,6 +183,20 @@ const Profile = () => {
           />
           <Divider sx={{ my: 2 }} />
           <AdditionalInfo occupation={person.occupation} notes={person.notes} />
+          <Divider sx={{ my: 2 }} />
+          <SuggestGifts
+            gifts={person.gifts}
+            loading={giftsLoading}
+            onSuggestGifts={handleSuggestGifts}
+            onClearGifts={handleClearGifts}
+          />
+          <Divider sx={{ my: 2 }} />
+          <SuggestEvents
+            activities={person.activities}
+            loading={eventsLoading}
+            onSuggestEvents={handleSuggestEvents}
+            onClearEvents={handleClearEvents}
+          />
         </CardContent>
       </Card>
 
