@@ -52,7 +52,7 @@ const Birthdays = ({ userId }) => {
       }}
     >
       <Typography variant="h5" textAlign="left" color="black" fontWeight="bold">
-        Birthdays
+        Upcoming Birthdays
       </Typography>
       <Box
         sx={{

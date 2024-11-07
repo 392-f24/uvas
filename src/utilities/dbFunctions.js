@@ -8,6 +8,7 @@ import {
   query,
   where,
   updateDoc,
+  arrayRemove,
   arrayUnion,
 } from "firebase/firestore";
 
@@ -65,27 +66,50 @@ export const updateTags = async (userId, tags) => {
   }
 };
 
-// Function to update profile data for a specific user
-async function updateProfileData(userId, profileData) {
-  try {
-    const userDocRef = getUserDoc(userId);
-
-    await updateDoc(userDocRef, profileData);
-
-    return {
-      success: true,
-      message: "Profile data updated successfully",
-      updatedProfile: profileData,
-    };
-  } catch (error) {
-    console.error("Error updating profile data:", error);
-    return {
-      success: false,
-      message: "Failed to update profile data",
-      error: error.message,
-    };
-  }
+// Function to update profile data for a specific user and profile section
+export async function updateProfileData(userId, profileId, profileData) {
+    try {
+      // Get the reference to the user's document
+      const userDocRef = getUserDoc(userId);
+  
+      // Fetch the current user document to get the existing profile
+      const userSnap = await getDoc(userDocRef);
+      if (!userSnap.exists()) throw new Error("User document does not exist");
+  
+      const userData = userSnap.data();
+      const existingProfile = userData.Relationships?.[profileId];
+  
+      if (!existingProfile) throw new Error("Profile not found");
+  
+      // Merge the existing and updated profile sections, overwriting new ones
+      const updatedProfile = {
+        ...existingProfile,
+        ...profileData,
+      };
+  
+      // Construct the update object
+      const updateData = {
+        [`Relationships.${profileId}`]: updatedProfile,
+      };
+  
+      // Update the document with the merged profile data
+      await updateDoc(userDocRef, updateData);
+  
+      return {
+        success: true,
+        message: 'Profile data updated successfully',
+        updatedProfile: updatedProfile,
+      };
+    } catch (error) {
+      console.error("Error updating profile data:", error);
+      return {
+        success: false,
+        message: 'Failed to update profile data',
+        error: error.message,
+      };
+    }
 }
+  
 // Function to update event data for a specific user
 async function updateEventData(userId, eventData) {
   try {
@@ -134,25 +158,25 @@ export const fetchPeople = async (userId) => {
 
 // Function to fetch a user's tags
 export async function fetchTags(userId) {
-  try {
-    const userSnap = await getDoc(getUserDoc(userId));
+    try {
+        const userSnap = await getDoc(getUserDoc(userId));
 
-    const tags = userSnap.data().Tags || [];
+        const tags = userSnap.data().Tags || [];
 
-    console.log("Tags fetched successfully:", tags);
-    return tags;
-  } catch (error) {
-    console.error("Error fetching tags:", error);
-    return [];
-  }
+        console.log("Tags fetched successfully:", tags);
+        return tags;
+    } catch (error) {
+        console.error("Error fetching tags:", error);
+        return [];
+    }
 }
+
 // Function to fetch a specific person's profile
 export const fetchPersonProfile = async (userId, personId) => {
   try {
     const userSnap = await getDoc(getUserDoc(userId));
     if (userSnap.exists()) {
       const relationships = userSnap.data().Relationships;
-
       return relationships[personId];
     }
     return null;

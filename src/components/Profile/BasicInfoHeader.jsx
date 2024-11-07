@@ -49,7 +49,7 @@ const BasicInfoHeader = ({
               />
             ))
           ) : (
-            <EmptyState text="Add tags" />
+            <EmptyState text="Tags" />
           )}
         </Box>
       </Box>
