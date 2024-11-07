@@ -7,20 +7,23 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-// import EditButton from "./EditButton";
+import EditButton from "./EditButton";
 import { Work, Notes } from "@mui/icons-material";
 import EmptyState from "./EmptyState";
 
-const AdditionalInfo = ({ occupation, notes }) => (
+const AdditionalInfo = ({ occupation, notes, OnEdit }) => (
   <Box>
-    <Typography
-      variant="subtitle1"
-      fontWeight="bold"
-      gutterBottom
-      color="primary"
-    >
-      Additional Information
-    </Typography>
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Typography
+        variant="subtitle1"
+        fontWeight="bold"
+        gutterBottom
+        color="primary"
+      >
+        Additional Information
+      </Typography>
+      <EditButton onClick={OnEdit} />
+    </Box>
     <List dense disablePadding>
       <ListItem disablePadding sx={{ mb: 1 }}>
         <ListItemIcon sx={{ minWidth: 40 }}>

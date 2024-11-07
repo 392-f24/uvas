@@ -87,7 +87,13 @@ function App() {
                   />
                   <Route
                     path="/profile/:profileId"
-                    element={user ? <Profile /> : <Navigate to="/login" />}
+                    element={
+                      user ? (
+                        <Profile userId={user.uid} />
+                      ) : (
+                        <Navigate to="/login" />
+                      )
+                    }
                   />
                   <Route
                     path="/birthdays"

@@ -77,8 +77,6 @@ const AddPersonForm = ({ userId, onClose }) => {
 
   const [state, change] = useFormData(validateForm, defaultData);
 
-  const personId = uuidv4();
-
   const onSubmit = async (e) => {
     e.preventDefault();
 
@@ -93,7 +91,6 @@ const AddPersonForm = ({ userId, onClose }) => {
     const person = {
       ...state.values,
       avatar: initials,
-      id: personId,
       likes,
       dislikes,
       contactInfo: {

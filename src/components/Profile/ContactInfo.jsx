@@ -13,6 +13,7 @@ import {
   Instagram,
   LinkedIn,
   LocationOn,
+  Info,
 } from "@mui/icons-material";
 import EditButton from "./EditButton";
 import EmptyState from "./EmptyState";
@@ -36,16 +37,19 @@ const ContactInfo = ({ contactInfo, address, OnEdit }) => (
       <EditButton onClick={OnEdit} />
     </Box>
     <List dense disablePadding>
+      {/* ADDRESS */}
       <ListItem disablePadding sx={{ mb: 1 }}>
         <ListItemIcon sx={{ minWidth: 40 }}>
-          <Email fontSize="small" color="action" />
+          <LocationOn fontSize="small" color="action" />
         </ListItemIcon>
-        {contactInfo?.email ? (
-          <ListItemText primary={contactInfo.email} />
+        {contactInfo?.address ? (
+          <ListItemText primary={contactInfo.address} />
         ) : (
-          <ListItemText primary={<EmptyState text="Email" />} />
+          <ListItemText primary={<EmptyState text="Address" />} />
         )}
       </ListItem>
+
+      {/* NUMBER */}
       <ListItem disablePadding sx={{ mb: 1 }}>
         <ListItemIcon sx={{ minWidth: 40 }}>
           <Phone fontSize="small" color="action" />
@@ -57,38 +61,37 @@ const ContactInfo = ({ contactInfo, address, OnEdit }) => (
         )}
       </ListItem>
 
+      {/* EMAIL */}
       <ListItem disablePadding sx={{ mb: 1 }}>
         <ListItemIcon sx={{ minWidth: 40 }}>
-          <LocationOn fontSize="small" color="action" />
+          <Email fontSize="small" color="action" />
         </ListItemIcon>
-        {address ? (
-          <ListItemText primary={address} />
+        {contactInfo?.email ? (
+          <ListItemText primary={contactInfo.email} />
         ) : (
-          <ListItemText primary={<EmptyState text="Address" />} />
+          <ListItemText primary={<EmptyState text="Email" />} />
         )}
       </ListItem>
 
-      {/* TODO: support more than linkedin and instagram */}
-      <ListItem disablePadding sx={{ mb: 1 }}>
-        <ListItemIcon sx={{ minWidth: 40 }}>
-          <Instagram fontSize="small" color="action" />
-        </ListItemIcon>
-        {contactInfo?.others?.Instagram ? (
-          <ListItemText primary={contactInfo.others.Instagram} />
-        ) : (
-          <ListItemText primary={<EmptyState text="Instagram" />} />
-        )}
-      </ListItem>
-      <ListItem disablePadding>
-        <ListItemIcon sx={{ minWidth: 40 }}>
-          <LinkedIn fontSize="small" color="action" />
-        </ListItemIcon>
-        {contactInfo?.others?.LinkedIn ? (
-          <ListItemText primary={contactInfo.others.LinkedIn} />
-        ) : (
-          <ListItemText primary={<EmptyState text="LinkedIn" />} />
-        )}
-      </ListItem>
+      {/* OTHERS */}
+      {contactInfo?.others &&
+        Object.entries(contactInfo.others).map(([key, value]) => (
+          <ListItem key={key} disablePadding sx={{ mb: 1 }}>
+            <ListItemIcon sx={{ minWidth: 40 }}>
+              <Info fontSize="small" color="action" />
+            </ListItemIcon>
+            <ListItemText
+              primary={
+                <Box display="flex" alignItems="center">
+                  <Typography variant="body2" color="secondary" sx={{ mr: 1 }}>
+                    {key}
+                  </Typography>
+                  <Typography variant="body2">{value}</Typography>
+                </Box>
+              }
+            />
+          </ListItem>
+        ))}
     </List>
   </Box>
 );
