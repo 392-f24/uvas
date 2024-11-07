@@ -22,7 +22,6 @@ const BasicInfoHeaderEdit = ({ open, onClose, person, updateProfile }) => {
     const updatedInfo = {
       firstName,
       lastName,
-      relationshipTags,
     };
     updateProfile(updatedInfo);
     onClose();
@@ -45,13 +44,13 @@ const BasicInfoHeaderEdit = ({ open, onClose, person, updateProfile }) => {
             fullWidth
             onChange={(e) => setLastName(e.target.value)}
           />
-          <TextField
+          {/* <TextField
             label="Relationship Tags"
             defaultValue={relationshipTags.join(", ") || ""}
             helperText="Separate tags with commas"
             fullWidth
             onChange={(e) => setRelationshiptags(e.target.value.split(", "))}
-          />
+          /> */}
         </Stack>
       </DialogContent>
       <DialogActions>

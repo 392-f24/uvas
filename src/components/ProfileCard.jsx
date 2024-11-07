@@ -36,8 +36,9 @@ function ProfileCard({ firstName, lastName, occupation, tags }) {
                             </Typography>
                         </Grid2>
                         <Grid2 sx={{ mt: 1 }}>
+
                             <Grid2 container direction="row" spacing={1}>
-                                {tags.map((tag, index) => (
+                                {tags && tags.map((tag, index) => (
                                     <Chip key={index} label={tag} color="primary" />
                                 ))}
                             </Grid2>

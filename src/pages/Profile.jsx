@@ -190,7 +190,7 @@ const Profile = ({ userId }) => {
 
           <ContactInfo
             contactInfo={person.contactInfo}
-            OnEdit={() => setOpenContact(true)}
+            OnEdit={() => {}}
           />
           <Divider sx={{ my: 2 }} />
 
