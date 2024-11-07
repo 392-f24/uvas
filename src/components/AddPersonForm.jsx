@@ -72,10 +72,12 @@ const validateForm = (key, val) => {
   }
 };
 
-const AddPersonForm = ({ userId }) => {
+const AddPersonForm = ({ userId, onClose }) => {
   const theme = useTheme();
 
   const [state, change] = useFormData(validateForm, defaultData);
+
+  const personId = uuidv4();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -86,10 +88,11 @@ const AddPersonForm = ({ userId }) => {
       )
     );
 
-    const personId = uuidv4();
+    const initials = state.values.firstName[0] + state.values.lastName[0];
 
     const person = {
       ...state.values,
+      avatar: initials,
       id: personId,
       likes,
       dislikes,
@@ -99,11 +102,13 @@ const AddPersonForm = ({ userId }) => {
       },
     };
 
-    console.log(userId);
-    console.log(person);
-
-    await addPerson(userId, person);
-    await updateTags(userId, person.relationshipTags);
+    try {
+      await addPerson(userId, person);
+      await updateTags(userId, person.relationshipTags);
+      if (onClose) onClose();
+    } catch (error) {
+      console.error("Error submitting form: ", error);
+    }
   };
 
   const SectionLabel = ({ label }) => {
@@ -119,9 +124,7 @@ const AddPersonForm = ({ userId }) => {
     );
   };
 
-  // TODO: fetch tags from database
   const [tags, setTags] = useState([]);
-
   const [newTag, setNewTag] = useState("");
   const [displayCustomTagForm, setDisplayCustomTagForm] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(null);
