@@ -28,7 +28,7 @@ function ProfileCard({ firstName, lastName, occupation, tags, avatar }) {
                     <Avatar
                         src={avatar}
                         alt={firstName}
-                        sx={{ width: 60, height: 60, bgcolor: "primary.main" }}
+                        sx={{ width: 60, height: 60, bgcolor: "primary.dark" }}
                     >
                         {getInitials()}
                     </Avatar>
