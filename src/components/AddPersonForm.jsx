@@ -88,9 +88,12 @@ const AddPersonForm = ({ userId, onClose }) => {
 
     const initials = state.values.firstName[0] + state.values.lastName[0];
 
+    const personId = uuidv4();
+
     const person = {
       ...state.values,
       avatar: initials,
+      id: personId,
       likes,
       dislikes,
       contactInfo: {
