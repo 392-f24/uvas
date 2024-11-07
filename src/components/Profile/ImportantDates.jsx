@@ -8,11 +8,11 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-// import EditButton from "./EditButton";
+import EditButton from "./EditButton";
 import { CalendarToday, Favorite } from "@mui/icons-material";
 import EmptyState from "./EmptyState";
 
-const ImportantDates = ({ birthday, anniversary }) => (
+const ImportantDates = ({ birthday, anniversary, OnEdit }) => (
   <Box>
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Typography
@@ -23,70 +23,34 @@ const ImportantDates = ({ birthday, anniversary }) => (
       >
         Important Dates
       </Typography>
-      {/*TODO:uncomment and add edit modal: <EditButton onClick={() => setOpenDates(true)} /> */}
+      <EditButton onClick={OnEdit} />
     </Box>
     <List dense disablePadding>
       <ListItem disablePadding sx={{ mb: 1 }}>
         <ListItemIcon sx={{ minWidth: 40 }}>
           <CalendarToday fontSize="small" color="action" />
         </ListItemIcon>
-        {birthday?.date ? (
+        {/* DOUBLE CHECK */}
+        {birthday ? (
           <ListItemText
-            primary={
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Typography>Birthday</Typography>
-                {birthday.remind ? (
-                  <Chip
-                    size="small"
-                    label="Reminder On"
-                    color="success"
-                    sx={{ ml: 1, height: 20 }}
-                  />
-                ) : (
-                  <Chip
-                    size="small"
-                    label="Reminder Off"
-                    color="failure"
-                    sx={{ ml: 1, height: 20 }}
-                  />
-                )}
-              </Box>
-            }
-            secondary={new Date(birthday.date).toLocaleDateString()}
+            primary="Birthday"
+            secondary={birthday.replace(/-/g, '/')}
           />
         ) : (
-          <ListItemText primary={<EmptyState text="Add birthday" />} />
+          <ListItemText primary={<EmptyState text="Birthday" />} />
         )}
       </ListItem>
       <ListItem disablePadding>
         <ListItemIcon sx={{ minWidth: 40 }}>
           <Favorite fontSize="small" color="action" />
         </ListItemIcon>
-        {anniversary?.date ? (
+        {anniversary ? (
           <ListItemText
             primary="Anniversary"
-            secondary={
-              <>
-                {new Date(anniversary.date).toLocaleDateString()}
-                {anniversary.remind && (
-                  <Chip
-                    size="small"
-                    label="Reminder"
-                    color="success"
-                    sx={{ ml: 1, height: 20 }}
-                  />
-                )}
-              </>
-            }
+            secondary={anniversary.replace(/-/g, '/')}
           />
         ) : (
-          <ListItemText primary={<EmptyState text="Add anniversary" />} />
+          <ListItemText primary={<EmptyState text="Anniversary" />} />
         )}
       </ListItem>
     </List>

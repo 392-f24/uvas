@@ -29,7 +29,7 @@ const AdditionalInfo = ({ occupation, notes }) => (
         {occupation ? (
           <ListItemText primary={occupation} />
         ) : (
-          <ListItemText primary={<EmptyState text="Add occupation" />} />
+          <ListItemText primary={<EmptyState text="Occupation" />} />
         )}
       </ListItem>
       <ListItem disablePadding>
@@ -39,7 +39,7 @@ const AdditionalInfo = ({ occupation, notes }) => (
         {notes ? (
           <ListItemText primary={notes} />
         ) : (
-          <ListItemText primary={<EmptyState text="Add notes" />} />
+          <ListItemText primary={<EmptyState text="Notes" />} />
         )}
       </ListItem>
     </List>
