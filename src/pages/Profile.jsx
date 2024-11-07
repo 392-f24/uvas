@@ -24,7 +24,7 @@ import {
 } from "../utilities/dbFunctions";
 import { suggestGifts, suggestEvents } from "../utilities/cloudFunctions";
 
-const Profile = () => {
+const Profile = ({ userId }) => {
   const { profileId } = useParams();
 
   const [person, setPerson] = useState();
@@ -32,14 +32,14 @@ const Profile = () => {
   const [eventsLoading, setEventsLoading] = useState(false);
 
   // Modal states for different sections
-  const [openLikesDislikes, setOpenLikesDislikes]  = useState(false);
+  const [openLikesDislikes, setOpenLikesDislikes] = useState(false);
   const [openBasicInfo, setOpenBasicInfo] = useState(false);
   const [openDates, setOpenDates] = useState(false);
   const [openContact, setOpenContact] = useState(false);
   const [openAdditional, setOpenAdditional] = useState(false);
 
   useEffect(() => {
-    fetchPersonProfile("User1", profileId)
+    fetchPersonProfile(userId, profileId)
       .then((res) => {
         setPerson({ ...res });
       })
@@ -180,20 +180,27 @@ const Profile = () => {
             OnEdit={() => setOpenDates(true)}
           />
           <Divider sx={{ my: 2 }} />
-          <LikesDislikes likes={person.likes} dislikes={person.dislikes} 
-          onEdit={() => setOpenLikesDislikes(true)} />
+
+          <LikesDislikes
+            likes={person.likes}
+            dislikes={person.dislikes}
+            onEdit={() => setOpenLikesDislikes(true)}
+          />
           <Divider sx={{ my: 2 }} />
-          
-          <AdditionalInfo occupation={person.occupation} notes={person.notes} />
-          <Divider sx={{ my: 2 }} />
+
           <ContactInfo
             contactInfo={person.contactInfo}
-            address={person.address}
             OnEdit={() => setOpenContact(true)}
           />
           <Divider sx={{ my: 2 }} />
-          <AdditionalInfo occupation={person.occupation} notes={person.notes} />
+
+          <AdditionalInfo
+            occupation={person.occupation}
+            notes={person.notes}
+            onEdit={() => {}}
+          />
           <Divider sx={{ my: 2 }} />
+
           <SuggestGifts
             gifts={person.gifts}
             loading={giftsLoading}
@@ -201,6 +208,7 @@ const Profile = () => {
             onClearGifts={handleClearGifts}
           />
           <Divider sx={{ my: 2 }} />
+
           <SuggestEvents
             activities={person.activities}
             loading={eventsLoading}
@@ -215,6 +223,7 @@ const Profile = () => {
         open={openBasicInfo}
         onClose={() => setOpenBasicInfo(false)}
         person={person}
+        updateProfile={updateProfile}
       />
       <DatesEdit
         open={openDates}
@@ -228,8 +237,8 @@ const Profile = () => {
         person={person}
         updateProfile={updateProfile}
       />
-      <LikesDislikesEdit 
-        open={openLikesDislikes} 
+      <LikesDislikesEdit
+        open={openLikesDislikes}
         onClose={() => setOpenLikesDislikes(false)}
         person={person}
         updateProfile={updateProfile}
