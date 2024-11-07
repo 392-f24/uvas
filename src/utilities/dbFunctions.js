@@ -1,4 +1,4 @@
-import { db } from './firebase'
+import { db } from "./firebase";
 import {
   doc,
   setDoc,
@@ -45,11 +45,24 @@ export const addPerson = async (userId, person) => {
   try {
     const userRef = getUserDoc(userId);
     await updateDoc(userRef, {
-      Relationships: arrayUnion(person),
+      [`Relationships.${person.id}`]: person,
     });
     console.log("Person added successfully");
   } catch (error) {
     console.error("Error adding person: ", error);
+  }
+};
+
+// Function to new tags to a user
+export const updateTags = async (userId, tags) => {
+  try {
+    const userRef = getUserDoc(userId);
+    await updateDoc(userRef, {
+      Tags: arrayUnion(...tags),
+    });
+    console.log("Tags updated successfully");
+  } catch (error) {
+    console.error("Error updating tags: ", error);
   }
 };
 
