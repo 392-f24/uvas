@@ -8,6 +8,7 @@ import {
   ListItemText,
   IconButton,
   Link,
+  Divider,
 } from "@mui/material";
 import { Event, Refresh, Clear } from "@mui/icons-material";
 
@@ -82,21 +83,18 @@ const SuggestEvents = ({
               <ListItemIcon sx={{ minWidth: 40 }}>
                 <NumberIcon number={index + 1} />
               </ListItemIcon>
-              <Link
-                href={activity.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{
-                  textDecoration: "none",
-                  color: "secondary.dark",
-                  "&:hover": {
-                    textDecoration: "underline",
-                    color: "primary.main",
-                  },
-                }}
-              >
-                <ListItemText primary={activity.title} />
-              </Link>
+              <Box sx={{ flexGrow: 1 }}>
+                <Link
+                  href={activity.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="none"
+                  color="secondary.dark"
+                >
+                  <ListItemText primary={activity.title} />
+                </Link>
+                <Divider />
+              </Box>
             </ListItem>
           ))
         ) : (
