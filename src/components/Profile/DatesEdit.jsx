@@ -16,7 +16,7 @@ import { Add, Delete } from "@mui/icons-material";
 function convertToMMDDYYYY(dateString) {
     const [year, month, day] = dateString.split('-');
     return `${month}-${day}-${year}`;
-  }
+}
 
 const DatesEdit = ({ open, onClose, person, updateProfile }) => {
     // State for the input values
@@ -31,7 +31,11 @@ const DatesEdit = ({ open, onClose, person, updateProfile }) => {
                     <TextField
                         label="Birthday"
                         type="date"
-                        defaultValue={person.birthday.replace(/(\d{2})-(\d{2})-(\d{4})/, '$3-$1-$2')}
+                        defaultValue={
+                            person.birthday
+                                ? person.birthday.replace(/(\d{2})-(\d{2})-(\d{4})/, '$3-$1-$2')
+                                : ""
+                        }
                         fullWidth
                         onChange={(e) => setBirthday(e.target.value)}
                         InputLabelProps={{ shrink: true }}
@@ -39,7 +43,11 @@ const DatesEdit = ({ open, onClose, person, updateProfile }) => {
                     <TextField
                         label="Anniversary"
                         type="date"
-                        defaultValue={person.anniversary.replace(/(\d{2})-(\d{2})-(\d{4})/, '$3-$1-$2')}
+                        defaultValue={
+                            person.anniversary
+                                ? person.anniversary.replace(/(\d{2})-(\d{2})-(\d{4})/, '$3-$1-$2')
+                                : ""
+                        }
                         fullWidth
                         onChange={(e) => setAnniversary(e.target.value)}
                         InputLabelProps={{ shrink: true }}
@@ -51,10 +59,10 @@ const DatesEdit = ({ open, onClose, person, updateProfile }) => {
                 <Button
                     variant="contained"
                     onClick={() => {
-                        const newBirthday = convertToMMDDYYYY(birthday);
-                        console.log(newBirthday);
-                        const newAnniversary = convertToMMDDYYYY(anniversary);
-                        updateProfile({ birthday: newBirthday, anniversary: newAnniversary });
+                        const newProfile = {};
+                        if (birthday) newProfile.birthday = convertToMMDDYYYY(birthday);
+                        if (anniversary) newProfile.anniversary = convertToMMDDYYYY(anniversary);
+                        updateProfile(newProfile);
                         onClose();
                     }}
                 >
