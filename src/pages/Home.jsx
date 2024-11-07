@@ -35,7 +35,13 @@ const Home = ({ userId }) => {
     if (userId) {
       fetchPeople(userId)
         .then((res) => {
-          setPeople(res);
+          const sortedPeople = res.sort((a, b) => {
+            const lastNameComparison = a.lastName.localeCompare(b.lastName);
+            return lastNameComparison !== 0
+              ? lastNameComparison
+              : a.firstName.localeCompare(b.firstName);
+          });
+          setPeople(sortedPeople);
         })
         .catch((err) => console.log(err));
     }
@@ -72,6 +78,7 @@ const Home = ({ userId }) => {
                 lastName={person.lastName}
                 occupation={person.occupation}
                 tags={person.relationshipTags}
+                avatar={person.avatar}
               ></ProfileCard>
             </Link>
           ))

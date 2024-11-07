@@ -10,7 +10,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 
-function ProfileCard({ firstName, lastName, occupation, tags }) {
+function ProfileCard({ firstName, lastName, occupation, tags, avatar }) {
+    const getInitials = () => {
+        return `${firstName[0]}${lastName ? lastName[0] : ""}`.toUpperCase();
+    };
+
     return (
         <Card sx={{
             px: 2,
@@ -21,7 +25,13 @@ function ProfileCard({ firstName, lastName, occupation, tags }) {
         }}>
             <Grid2 container spacing={2} alignItems="center">
                 <Grid2 xs={3}>
-                    <Avatar sx={{ width: 64, height: 64 }} />
+                    <Avatar
+                        src={avatar}
+                        alt={firstName}
+                        sx={{ width: 60, height: 60, bgcolor: "primary.main" }}
+                    >
+                        {getInitials()}
+                    </Avatar>
                 </Grid2>
                 <Grid2 xs={9}>
                     <Grid2 container direction="column">
